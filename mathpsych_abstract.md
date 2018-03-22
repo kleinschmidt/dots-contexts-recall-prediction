@@ -16,8 +16,8 @@ finite set of hypotheses about how the percepts encountered thus far are
 assigned to contexts, updating these in parallel as each new percept comes in.
 
 We apply this model to a recall task where subjects had to recall the position
-of dots.  Unbeknownst to subjects, each dot appeared in one of a few pre-defined
-regions on the screen.  Our model captures subjects' ability to learn
-the inventory of contexts, the statistics of dot positions within each context,
-and the statistics of transitions between contexts—as reflected in both recall
-and prediction.
+of dots (Robbins, Hemmer, and Tang, CogSci2014).  Unbeknownst to subjects, each
+dot appeared in one of a few pre-defined regions on the screen.  Our model
+captures subjects' ability to learn the inventory of contexts, the statistics of
+dot positions within each context, and the statistics of transitions between
+contexts—as reflected in both recall and prediction.
