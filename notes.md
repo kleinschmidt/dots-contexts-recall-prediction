@@ -72,7 +72,9 @@ Could combine these two to marginalize:
                                 Nₖ otherwise
 
 where the constant of proportionality is (N+α)(1+κ).  The question here is how
-to define/compute Nₖ.
+to define/compute Nₖ.  I think the way that Fox et al. solve this is by sampling
+auxiliary variables for the counts and overrides, conditional on the
+assignments.
 
 ### Updating κ and α
 
