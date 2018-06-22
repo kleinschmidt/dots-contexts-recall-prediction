@@ -54,22 +54,42 @@ variable?  But it's straightforward to do it with the latent variable sort of
 model so best not to worry too much...especially since that's more aligned with
 the psychological plausibility.
 
+### Comparison with HDP-HMM
+
+The Fox et al. model assumes a different transition distribution for every
+state, but that seems like overkill.  Ignoring the previous state seems like it
+would make the sampling easier since you only need to worry about one transition
+at a time (instead of also considering t->t+1).  It also makes it a little hard
+to translate their derivations, since the κ comes in at the second level.
+
+I just don't think it matters all that much as a practical matter.  Can just as
+easily treat the prior predictive for the next state as a mixture model (stick
+or change).
+
 ### Sticky prior with indicator variable
 
 So under this model the prior is 
 
+\[
   p(cₙ | sₙ, c₁...c_{n-1}, α) ∝ 1 if cₙ=c_{n-1}, 0 otherwise (sₙ=1, sticky)
                                Nₖ for 1..k, α for k+1 (sₙ=0, non-sticky)
+\]
 
 and p(sₙ=1 | κ) = κ.  Nₖ is the (modified) cluster size for cluster k, where
 "sticky" observations are ignored: Nₖ = ∑ₙ I(cₙ=k)×I(sₙ=0).
 
+(what I'm calling κ here is really more like ρ from Fox et al.: the probability
+of sticking.)
+
 ### Sticky prior marginalizing over indicator:
 
-Could combine these two to marginalize: 
+Could combine these two to marginalize?
+
+\[
   p(cₙ=k | c₁..c_{n-1}, α, κ) ∝ Nₖ+(N+α)κ for k=c_{n-1}
                                 α for K+1
                                 Nₖ otherwise
+\]
 
 where the constant of proportionality is (N+α)(1+κ).  The question here is how
 to define/compute Nₖ.  I think the way that Fox et al. solve this is by sampling
@@ -79,3 +99,5 @@ assignments.
 ### Updating κ and α
 
 The α update is the same regardless (just depends on the number of clusters).
+
+To update κ we need to ....
