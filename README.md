@@ -16,3 +16,7 @@
     * changepoint model (does it help to go back to previous clusters?)
 * Run on 2017 data, too
     * incl. random data (cf. baselines)
+
+### Code
+
+* refactor plotting to cut down on cut and paste plotting
