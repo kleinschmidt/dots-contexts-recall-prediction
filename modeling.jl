@@ -1,10 +1,22 @@
+################################################################################
+# Dave Kleinschmidt, 2018
+################################################################################
+
 module DotLearning
 
-using DataFrames, DataFramesMeta, Underscore
-using Particles, Distributions, ConjugatePriors
+using
+    DataFrames,
+    DataFramesMeta,
+    Underscore,
+    Particles,
+    Distributions,
+    ConjugatePriors,
+    JuliennedArrays,
+    StatsBase
 
-using JuliennedArrays
-
+using ConjugatePriors:
+    NormalInverseWishart,
+    posterior
 
 export
     RecallFilter,
@@ -17,7 +29,7 @@ export
 
 using Distributions: MvNormalStats
 
-ConjugatePriors.posterior(c::Component) = posterior(c.prior, c.suffstats)
+ConjugatePriors.posterior(c::Component) = ConjugatePriors.posterior(c.prior, c.suffstats)
 
 # uses the expected covariance matrix
 function recall_est(x::AbstractVector{Float64}, Sx::Matrix{Float64}, c::Component{NormalInverseWishart{Float64}}) 
