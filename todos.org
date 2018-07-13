@@ -1,0 +1,42 @@
+* For talk
+** "headline" model fit number
+   how best to summarize model fit?  MSE isn't a terrible choice, although
+   that's going to get messed up by the occasional very large error.  could use
+   something like the dot product of the predicted and actuall recall
+   discrepancies, or the cosine of the angle between them.  Or the magnitude.
+
+   just want some way to capture, overall, how well the model is doing (to make
+   model comparison easier).  definitely _don't_ want to use radial bias for
+   this, since it's going to be biased itself.
+*** TODO implement MSE
+    ~recall_mse~?
+*** TODO implement cosine similarity
+** modeling prediction
+*** TODO run filters forward
+    To model prediction, draw a sample from a randomly selected particle at some
+    point in the future.  Need to be able to "run" the prior (draw sample,
+    update suff. stats.), and then pick a component and sample from it.
+** TODO modeling plumbing
+   need a data structure to store experiment parameters and runs
+** TODO parameter exploration
+*** stickiness
+*** concentration
+*** cluster prior?
+*** sensory uncertainty
+** baseline models
+*** TODO changepoint
+    can do this with a prior that only ever yields state K or K+1.
+*** DONE non-sticky
+*** DONE known clusters
+** random dataset
+   what does the model make of this data?  does it find any structure or just
+   put everything in a single component.  do people look like they're finding
+   any kind of structure?  
+
+   might need slightly "fancier" ways of testing for agreement between model and
+   behavior since we can't do the thing where we look at the radial bias.  or
+   can we?  doesn't seem like it makes sense in this context.
+
+   could look at cosine similarity between displacement vectors.  or even dot
+   product, normalized by the length of one of the vectors (to get a measure of
+   the mismatch in size _and_ direction)

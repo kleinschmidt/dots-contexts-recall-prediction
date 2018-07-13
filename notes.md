@@ -101,3 +101,37 @@ assignments.
 The α update is the same regardless (just depends on the number of clusters).
 
 To update κ we need to ....
+
+# Planning talk
+
+The overarching point of this project is that
+
+1. people pick up on the _temporal structure_ of these sequences of positions.
+   They're _looking for structure_.
+2. at a high level, can model that search for structure in a bayesian framework:
+   have some prior over likely structures and combine that with the data you
+   get.
+3. but actually _doing_ the inference is really hard...in fact it's intractible.
+   But we can _approximate_ it in a psychologically constrained way: online,
+   finite set of hypotheses.
+   
+This model captures the _qualitative patterns_ in peoples behavior: 
+
+* Shrinkage towards expected values in recall.
+* stronger shrinkage towards the _overall_ average when less certain about the
+  specific context.
+* ( more specific predictions when further into a block )
+
+## What is the model
+
+## Does it work
+
+### as an approximation to the true clusters
+
+yes. [assignment similarity plots]
+
+### as a model of human behavior
+
+also yes.  [bias plot]
+
+
