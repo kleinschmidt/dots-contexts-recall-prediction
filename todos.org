@@ -24,7 +24,7 @@
 *** cluster prior?
 *** sensory uncertainty
 ** baseline models
-*** TODO changepoint
+*** DONE changepoint
     can do this with a prior that only ever yields state K or K+1.
 *** DONE non-sticky
 *** DONE known clusters
