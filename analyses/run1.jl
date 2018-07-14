@@ -1,5 +1,5 @@
 
-using
+@everywhere using
     DataFrames,
     DataFramesMeta,
     Underscore,
@@ -12,11 +12,6 @@ using
 @everywhere include("../modeling.jl")
 @everywhere include("../experiments.jl")
 
-using JLD2
-
-@load "../prior_empirical.jld2"
-@load "../data/dots2014.jld2"
-
 @everywhere function runner(params::Dict)
     DataFrames.by(params[:data], :subjid1) do d
         DotLearning.model_recall(d,
@@ -28,15 +23,26 @@ using JLD2
     end
 end
 
+using JLD2
+
+@load "../prior_empirical.jld2"
+@load "../data/dots2014.jld2"
+
 expts = experiments(data = [recall],
                     prior = [prior_optimized],
                     α = [0.1, 1.0, 10.0],
                     ρ = [0.1, 0.5, 0.9],
                     n = [10, 100],
-                    Sσ = [0.01, 0.1, 1.0].^2)
+                    Sσ = [0.01, 0.1, 1.0].^2,
+                    batch = [:run1])
 
 res1 = run(runner, expts[1])
 
-res2 = fetch(@spawn run(runner, expts[2]))
-res2_again = run(runner, expts[2])
+res1_again = fetch(@spawn run(runner, expts[1]))
 
+res12 = pmap(expts[1:2]) do ex
+    run(runner, ex)
+end
+
+run1_results = pmap(expts) do ex run(runner, ex) end
+@save "../results/run1.jld2" run1_results expts
