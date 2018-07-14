@@ -8,15 +8,14 @@
    just want some way to capture, overall, how well the model is doing (to make
    model comparison easier).  definitely _don't_ want to use radial bias for
    this, since it's going to be biased itself.
-*** TODO implement MSE
-    ~recall_mse~?
-*** TODO implement cosine similarity
+*** DONE implement MSE
+*** DONE implement cosine similarity
 ** modeling prediction
 *** TODO run filters forward
     To model prediction, draw a sample from a randomly selected particle at some
     point in the future.  Need to be able to "run" the prior (draw sample,
     update suff. stats.), and then pick a component and sample from it.
-** TODO modeling plumbing
+** DONE modeling plumbing
    need a data structure to store experiment parameters and runs
 ** TODO parameter exploration
 *** stickiness
