@@ -37,12 +37,13 @@
 # and something that allows you to grab the result.  it's just a sort of
 # memoization.
 
-mutable struct Experiment
+mutable struct Experiment{D}
     params::Dict{Symbol, Any}
+    data::D
     seed::UInt
 end
 
-Experiment(params) = Experiment(params, rand(UInt))
+Experiment(params, data) = Experiment(params, data, rand(UInt))
 
 Base.show(io::IO, ex::Experiment) =
     print(io, "Experiment(" * join(["$k=$v" for (k,v) in ex.params], ", ") * ")")
@@ -60,7 +61,7 @@ function Base.run(f::F, ex::Experiment) where F<:Function
     srand(ex.seed)
     let result
         try
-            result = f(ex.params)
+            result = f(ex.params, ex.data)
         catch e
         result = e
         end
@@ -117,5 +118,21 @@ Produces 9 `Experiment`s, one of each combination of μ and σ2.  Each of these
 has the same value of `x`, since it was passed as a vector wrapped in a tuple.
 
 """
-experiments(params::Dict) = [Experiment(d) for d in arrayofdicts(params)]
-experiments(; kw...) = experiments(Dict(kw))
+experiments(data, params::Dict) = [Experiment(d, data) for d in arrayofdicts(params)]
+experiments(data; kw...) = experiments(data, Dict(kw))
+
+
+
+
+################################################################################
+# summary stats
+
+mse(data, model) = mean(@. sqrt((data[:x_resp] - model[:x_mod])^2 + (data[:y_resp] - model[:y_mod])^2))
+cosinesim(data, model) = 1 - mean(Distances.colwise(CosineDist(),
+                                       hcat(data[:x_resp] .- data[:x], data[:y_resp] .- data[:y])',
+                                       hcat(model[:x_mod] .- data[:x], model[:y_mod] .- data[:y])'))
+
+using Distances
+
+summarize(r::Result, f::Function) = f(r.experiment.data, r.result)
+summarize(r::Result; fs...) = merge(r.experiment.params, Dict(k=>summarize(r, v) for (k,v) in fs))
