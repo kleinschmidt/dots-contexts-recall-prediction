@@ -65,9 +65,9 @@ RecallFilter(particles::ParticleFilter, Sx::Matrix{Float64}) =
 
 # I'm not sure if the anonymous function here is a performance gotcha.  Didn't
 # seem like it in my playing around but you never know.
-function Base.filter!(rf::RecallFilter, xys::AbstractVector)
+function Base.filter!(rf::RecallFilter, xys::AbstractVector; progress=true)
     callback = (p, x) -> push!(rf.recalled, recall_est(x, rf.Sx, p))
-    filter!(rf.particles, xys, cb=callback)
+    filter!(rf.particles, xys, progress, cb=callback)
     rf
 end
 
@@ -80,7 +80,7 @@ extract_data(d::AbstractDataFrame, ps::ParticleFilter) =
 
 function model_recall(d::AbstractDataFrame, ps::ParticleFilter, Sx::Matrix; add=true)
     xy_vecs = extract_data(d, ps)
-    ps = filter!(RecallFilter(ps, Sx), xy_vecs)
+    ps = filter!(RecallFilter(ps, Sx), xy_vecs, progress=false)
     recalled = DataFrame(x_mod = first.(ps.recalled),
                          y_mod = last.(ps.recalled),
                          rho_mod = norm.(ps.recalled))
