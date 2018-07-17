@@ -18,6 +18,8 @@ using ConjugatePriors:
     NormalInverseWishart,
     posterior
 
+import Base.filter!
+
 export
     RecallFilter,
     KnownFilter,
@@ -63,9 +65,11 @@ end
 RecallFilter(particles::ParticleFilter, Sx::Matrix{Float64}) =
     RecallFilter(particles, Sx, Vector{Vector{Float64}}())
 
+extract_data(d::AbstractDataFrame, rf::RecallFilter) = extract_data(d, rf.particles)
+
 # I'm not sure if the anonymous function here is a performance gotcha.  Didn't
 # seem like it in my playing around but you never know.
-function Base.filter!(rf::RecallFilter, xys::AbstractVector; progress=true)
+function filter!(rf::RecallFilter, xys::AbstractVector; progress=true)
     callback = (p, x) -> push!(rf.recalled, recall_est(x, rf.Sx, p))
     filter!(rf.particles, xys, progress, cb=callback)
     rf
@@ -107,6 +111,49 @@ recall_est(xyi::Tuple{AbstractVector, Int}, Sx, ps) = recall_est(xyi[1], Sx, ps)
 
 extract_data(d::AbstractDataFrame, ps::KnownFilter) = 
     @with d map((x,y,i) -> ([x,y], round(Int, i)), :x, :y, :block)
+
+
+################################################################################
+# Modeling prediction
+#
+# We can compose the recall and prediction tasks because we have RecallFilter
+# which behaves like a particle filter as far as anyone else is concerned
+mutable struct PredictionFilter{P}
+    particles::P
+    pred_points::Vector{Int}
+    pred_delays::Vector{Int}
+    n_samples::Int
+    predictions::Vector{Vector{Vector{Float64}}}
+end
+
+PredictionFilter(particles::P, pred_points::Vector{Int}, pred_delays::Vector{Int}, n_samples::Int) where P<:ParticleFilter =
+    PredictionFilter(particles, pred_points, pred_delays, n_samples, Vector{Vector{Vector{Float64}}}())
+
+function rand_posterior_future(pf::ParticleFilter, t::Int)
+    ps = particles(pf)
+    p = sample(ps, Weights(weight.(ps)))
+    sp = p.stateprior
+    state = min(last(last(Particles.simulate(sp, t))), maximum(Particles.candidates(sp)))
+    rand(posterior_predictive(components(p)[state]))
+end
+
+rand_posterior_future(pf::ParticleFilter, t::Int, n::Int) =
+    [rand_posterior_future(pf, t) for _ in 1:n]
+
+function filter!(pf::PredictionFilter, data::AbstractDataFrame)
+    @show datavecs = extract_data(data, pf.particles)
+
+    ranges = accumulate( (ran, idx) -> ran.stop+1:idx, 0:0, pf.pred_points)
+    data_views = view.((datavecs, ), ranges)
+    for (dat, t) in zip(data_views, pf.pred_delays)
+        filter!(pf.particles, dat)
+        pred_samples = rand_posterior_future(pf.particles, t, pf.n_samples)
+        push!(pf.predictions, pred_samples)
+    end
+
+    
+    return pf
+end
 
 
 end
