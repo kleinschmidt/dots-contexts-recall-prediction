@@ -139,11 +139,12 @@ also yes.  [bias plot]
 
 ## outline
 
-* High-level intro: what's the context?  judgements are made _in context_, and
-  models of learning/memory need to take that into account
-* Specific setting: spatial memory task.  where did mole appear?  unbeknownst to
-  people, add sequential structure: disribution of locations changes
-  periodically.
+* High-level intro: (what's the context for talk?)
+    * judgements are made _in context_, and models of learning/memory need to
+      take that into account
+* Specific setting: spatial memory task.
+    * where did mole appear?  unbeknownst to people, add sequential structure:
+      disribution of locations changes periodically.
     * Evidence for structure sensitivity: recall is _biased_, and it's _biased
       more_ for longer contexts (because need to learn context).
     * Also, prediction.
@@ -161,15 +162,21 @@ also yes.  [bias plot]
     * update particles _state_ and _weight_ as new data comes in.
     * periodically replace low-probability particles with copies of
       high-probability particles (rejuvination)
+    * then any expectation becomes a weighted average over the particles
     * (( details: particular algorithm: Chen and Liu (2000) ))
 * success or failure is going to depend in large part on the _prior_ on states.
-    * standard: CRP (rich get richer).
+    * standard nonparametric: DP/CRP (rich get richer, with held out count for
+      unseen clusters).  easy (and intuitive) to compute probabiltiy of next
+      state conditional on the previous states (counts)
     * "sticky" CRP to capture sequential dependencies. (with an auxiliary
       variable to keep track of "sticks")
 * this does a pretty good job of learning the clusters that are actually present
   in the experiment
     * `plot: assignment similarity of one subject`
+    * parameters: stickiness and concentration (willingness to create new
+      clusters)
 * modeling recall: Bayesian cue combination of uncertain memory trace and
   context distribution.
 * modeling prediction: sample state forward some number of steps, and sample a
   point from the resulting distribution.
+    * `plot: prediction data summary?`
