@@ -56,7 +56,7 @@ function recall_est(x::AbstractVector, Sx::Matrix, ps::ParticleFilter)
     return xy_recalled
 end
 
-mutable struct RecallFilter{P}
+mutable struct RecallFilter{P} <: Particles.ParticleFilter
     particles::P
     Sx::Matrix{Float64}
     recalled::Vector{Vector{Float64}}
@@ -64,6 +64,8 @@ end
 
 RecallFilter(particles::ParticleFilter, Sx::Matrix{Float64}) =
     RecallFilter(particles, Sx, Vector{Vector{Float64}}())
+
+Particles.particles(rf::RecallFilter) = particles(rf.particles)
 
 extract_data(d::AbstractDataFrame, rf::RecallFilter) = extract_data(d, rf.particles)
 
@@ -120,13 +122,13 @@ extract_data(d::AbstractDataFrame, ps::KnownFilter) =
 # which behaves like a particle filter as far as anyone else is concerned
 mutable struct PredictionFilter{P}
     particles::P
-    pred_points::Vector{Int}
-    pred_delays::Vector{Int}
+    pred_points::AbstractVector{Int}
+    pred_delays::AbstractVector{Int}
     n_samples::Int
     predictions::Vector{Vector{Vector{Float64}}}
 end
 
-PredictionFilter(particles::P, pred_points::Vector{Int}, pred_delays::Vector{Int}, n_samples::Int) where P<:ParticleFilter =
+PredictionFilter(particles::P, pred_points::AbstractVector{Int}, pred_delays::AbstractVector{Int}, n_samples::Int) where P<:ParticleFilter =
     PredictionFilter(particles, pred_points, pred_delays, n_samples, Vector{Vector{Vector{Float64}}}())
 
 function rand_posterior_future(pf::ParticleFilter, t::Int)
@@ -141,8 +143,6 @@ rand_posterior_future(pf::ParticleFilter, t::Int, n::Int) =
     [rand_posterior_future(pf, t) for _ in 1:n]
 
 function filter!(pf::PredictionFilter, data::AbstractDataFrame)
-    @show datavecs = extract_data(data, pf.particles)
-
     ranges = accumulate( (ran, idx) -> ran.stop+1:idx, 0:0, pf.pred_points)
     data_views = view.((datavecs, ), ranges)
     for (dat, t) in zip(data_views, pf.pred_delays)
@@ -150,8 +150,6 @@ function filter!(pf::PredictionFilter, data::AbstractDataFrame)
         pred_samples = rand_posterior_future(pf.particles, t, pf.n_samples)
         push!(pf.predictions, pred_samples)
     end
-
-    
     return pf
 end
 
