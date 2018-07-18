@@ -84,12 +84,15 @@ end
 extract_data(d::AbstractDataFrame, ps::ParticleFilter) =
     map(vec, julienne(hcat(d[:x], d[:y]), (*,:)))
 
+DataFrames.DataFrame(rf::RecallFilter) =
+    DataFrame(x_mod = first.(rf.recalled),
+              y_mod = last.(rf.recalled),
+              rho_mod = norm.(rf.recalled))
+
 function model_recall(d::AbstractDataFrame, ps::ParticleFilter, Sx::Matrix; add=true)
     xy_vecs = extract_data(d, ps)
     ps = filter!(RecallFilter(ps, Sx), xy_vecs, progress=false)
-    recalled = DataFrame(x_mod = first.(ps.recalled),
-                         y_mod = last.(ps.recalled),
-                         rho_mod = norm.(ps.recalled))
+    recalled = DataFrame(ps)
     return add ? hcat(d, recalled) : recalled
 end
 
@@ -125,11 +128,11 @@ mutable struct PredictionFilter{P}
     pred_points::AbstractVector{Int}
     pred_delays::AbstractVector{Int}
     n_samples::Int
-    predictions::Vector{Vector{Vector{Float64}}}
+    predictions::Vector{Matrix{Float64}}
 end
 
 PredictionFilter(particles::P, pred_points::AbstractVector{Int}, pred_delays::AbstractVector{Int}, n_samples::Int) where P<:ParticleFilter =
-    PredictionFilter(particles, pred_points, pred_delays, n_samples, Vector{Vector{Vector{Float64}}}())
+    PredictionFilter(particles, pred_points, pred_delays, n_samples, Vector{Matrix{Float64}}())
 
 function rand_posterior_future(pf::ParticleFilter, t::Int)
     ps = particles(pf)
@@ -139,8 +142,18 @@ function rand_posterior_future(pf::ParticleFilter, t::Int)
     rand(posterior_predictive(components(p)[state]))
 end
 
-rand_posterior_future(pf::ParticleFilter, t::Int, n::Int) =
-    [rand_posterior_future(pf, t) for _ in 1:n]
+function rand_posterior_future(pf::ParticleFilter, t::Int, n::Int)
+    samps = zeros(n, 2)
+    for i in 1:n
+        samps[i, :] .= rand_posterior_future(pf, t)
+    end
+    samps
+end
+
+DataFrames.DataFrame(pf::PredictionFilter) =
+    DataFrame(respnr = pf.pred_points,
+              pred = pf.pred_delays,
+              xys_mod = pf.predictions)
 
 function filter!(pf::PredictionFilter, data::AbstractDataFrame)
     ranges = accumulate( (ran, idx) -> ran.stop+1:idx, 0:0, pf.pred_points)
