@@ -61,5 +61,5 @@ expts = experiments((recall_bysub, pred_bysub),
                     iter = [1:10;])
 
 
-results = pmap(expts[1:1]) do ex run(recall_predict, ex) end
+results = pmap(expts) do ex run(recall_predict, ex) end
 @save "../results/run3-$(DateTime(now())).jld2" expts results recall_predict, typeof(recall_predict)
