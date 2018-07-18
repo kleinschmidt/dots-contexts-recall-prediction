@@ -144,6 +144,7 @@ rand_posterior_future(pf::ParticleFilter, t::Int, n::Int) =
 
 function filter!(pf::PredictionFilter, data::AbstractDataFrame)
     ranges = accumulate( (ran, idx) -> ran.stop+1:idx, 0:0, pf.pred_points)
+    datavecs = extract_data(data, pf.particles)
     data_views = view.((datavecs, ), ranges)
     for (dat, t) in zip(data_views, pf.pred_delays)
         filter!(pf.particles, dat)
