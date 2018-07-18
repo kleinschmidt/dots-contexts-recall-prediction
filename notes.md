@@ -106,8 +106,8 @@ To update κ we need to ....
 
 The overarching point of this project is that
 
-1. people pick up on the _temporal structure_ of these sequences of positions.
-   They're _looking for structure_.
+1. people pick up on the _temporal/sequential structure_ of these sequences of
+   positions.  They're _looking for structure_.
 2. at a high level, can model that search for structure in a bayesian framework:
    have some prior over likely structures and combine that with the data you
    get.
@@ -135,3 +135,41 @@ yes. [assignment similarity plots]
 also yes.  [bias plot]
 
 
+
+
+## outline
+
+* High-level intro: what's the context?  judgements are made _in context_, and
+  models of learning/memory need to take that into account
+* Specific setting: spatial memory task.  where did mole appear?  unbeknownst to
+  people, add sequential structure: disribution of locations changes
+  periodically.
+    * Evidence for structure sensitivity: recall is _biased_, and it's _biased
+      more_ for longer contexts (because need to learn context).
+    * Also, prediction.
+* Challenge for modeling: computational level, infer latent context variables,
+  both number of contexts and properties/assignment of points to contexts
+  (bayesian non-parametrics).  but enormous computational complexity (number of
+  possible partitions grows > 2^N).  to _implement_ this model at all, need to
+  do approximation.
+    * `plot of locations partitioned different ways with likelihoods`
+* for a cognitive model (at an algorithmic/psychological level), want something
+  that's online (not batch), and resource limited (not maintaining full
+  posterior uncertainty).
+    * SMC: maintain K weighted hypotheses about partitioning (and other
+      variables) in parallel (particles)
+    * update particles _state_ and _weight_ as new data comes in.
+    * periodically replace low-probability particles with copies of
+      high-probability particles (rejuvination)
+    * (( details: particular algorithm: Chen and Liu (2000) ))
+* success or failure is going to depend in large part on the _prior_ on states.
+    * standard: CRP (rich get richer).
+    * "sticky" CRP to capture sequential dependencies. (with an auxiliary
+      variable to keep track of "sticks")
+* this does a pretty good job of learning the clusters that are actually present
+  in the experiment
+    * `plot: assignment similarity of one subject`
+* modeling recall: Bayesian cue combination of uncertain memory trace and
+  context distribution.
+* modeling prediction: sample state forward some number of steps, and sample a
+  point from the resulting distribution.

@@ -11,13 +11,13 @@
 *** DONE implement MSE
 *** DONE implement cosine similarity
 ** modeling prediction
-*** TODO run filters forward
+*** DONE run filters forward
     To model prediction, draw a sample from a randomly selected particle at some
     point in the future.  Need to be able to "run" the prior (draw sample,
     update suff. stats.), and then pick a component and sample from it.
 ** DONE modeling plumbing
    need a data structure to store experiment parameters and runs
-** TODO parameter exploration
+** DONE parameter exploration
 *** stickiness
 *** concentration
 *** cluster prior?
@@ -27,6 +27,7 @@
     can do this with a prior that only ever yields state K or K+1.
 *** DONE non-sticky
 *** DONE known clusters
+** TODO get "headline" numbers for baseline models
 ** random dataset
    what does the model make of this data?  does it find any structure or just
    put everything in a single component.  do people look like they're finding
