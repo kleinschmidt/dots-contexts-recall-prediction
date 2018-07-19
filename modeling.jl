@@ -24,7 +24,8 @@ export
     RecallFilter,
     KnownFilter,
     recall_est,
-    model_recall
+    model_recall,
+    extract_data
 
 ################################################################################
 # Modeling recall

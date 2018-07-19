@@ -1,3 +1,11 @@
 div.input {
     display: none;
 }
+
+div.output_stderr {
+    display: none;
+}
+
+div.prompt {
+    display: none;
+}
