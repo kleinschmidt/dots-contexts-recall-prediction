@@ -60,4 +60,4 @@ expts = experiments((recall_bysub, pred_bysub),
 
 
 results = pmap(expts) do ex run(recall_predict, ex) end
-@save "../results/run4-$(DateTime(now())).jld2" expts results recall_predict, typeof(recall_predict)
+@save "../results/run4-$(DateTime(now())).jld2" expts results recall_predict
