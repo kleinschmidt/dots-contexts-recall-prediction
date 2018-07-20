@@ -128,11 +128,11 @@ experiments(data; kw...) = experiments(data, Dict(kw))
 # summary stats
 
 mse(data, model) = mean(@. sqrt((data[:x_resp] - model[:x_mod])^2 + (data[:y_resp] - model[:y_mod])^2))
+
+using Distances
 cosinesim(data, model) = 1 - mean(Distances.colwise(CosineDist(),
                                        hcat(data[:x_resp] .- data[:x], data[:y_resp] .- data[:y])',
                                        hcat(model[:x_mod] .- data[:x], model[:y_mod] .- data[:y])'))
-
-using Distances
 
 summarize(r::Result, f::Function) = f(r.experiment.data, r.result)
 summarize(r::Result; fs...) = merge(r.experiment.params, Dict(k=>summarize(r, v) for (k,v) in fs))
