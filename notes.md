@@ -147,7 +147,15 @@ also yes.  [bias plot]
       disribution of locations changes periodically.
     * Evidence for structure sensitivity: recall is _biased_, and it's _biased
       more_ for longer contexts (because need to learn context).
+        * TODO: use cosine sim/dist to center of cluster (known model) as
+          measure instead of radial bias?  because model doesn't capture radial
+          bias well.
+        * OR cosine sim to other possible deviations (bias towards the center,
+          towards average radius, etc.)
+        * OR add some random noise to recalled xy points to simulate
+          response noise.
     * Also, prediction.
+        * **WHAT??**
 * Challenge for modeling: computational level, infer latent context variables,
   both number of contexts and properties/assignment of points to contexts
   (bayesian non-parametrics).  but enormous computational complexity (number of
