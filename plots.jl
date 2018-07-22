@@ -42,3 +42,29 @@ end
         x,y
     end
 end
+
+@userplot Arena
+@recipe function f(p::Arena)
+
+    seriestype --> :scatter
+    aspect_ratio --> :equal
+    axis --> false
+    grid --> false
+    legend --> false
+    
+    x, y = length(p.args)==2 ? p.args : ([], [])
+    @series begin
+        seriestype --> :scatter
+        x,y
+    end
+
+    @series begin
+        group := nothing
+        color := Gray(0.2)
+        seriestype := :path
+        cos.(linspace(0,2π,200)), sin.(linspace(0,2π,200))
+    end
+    
+end
+
+Plots.group_as_matrix(::Arena) = true
