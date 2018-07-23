@@ -24,8 +24,14 @@
     text-transform: none;
 }
 
-.reveal h4.venue {
+.reveal p.venue {
     text-transform: none;
+}
+
+.reveal .venue a {
+    font-style: normal;
+    text-decoration: none;
+    color: #888;
 }
 
 .reveal p.author {
