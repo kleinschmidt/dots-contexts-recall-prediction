@@ -20,8 +20,29 @@
     color: #aaa;
 }
 
-.reveal h2.authors {
-    color
+.reveal h1.title {
+    text-transform: none;
+}
+
+.reveal h4.venue {
+    text-transform: none;
+}
+
+.reveal p.author {
+    color: #444;
+    font-size: 150%;
+    text-transform: none;
+    font-weight: normal;
+}
+
+.reveal span.affiliation {
+    color: #888;
+    font-size: 75%;
+}
+
+.reveal h3.author em {
+    color: #888;
+    font-weight: 100;
 }
 
 .reveal h1 {
