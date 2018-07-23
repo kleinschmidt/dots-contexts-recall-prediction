@@ -8,7 +8,8 @@ import nbconvert
 nb_name = 'mathpsych-2018-slides'
 
 exporter = nbconvert.SlidesExporter()
-exporter.reveal_url_prefix = "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0"
+# exporter.reveal_url_prefix = "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0"
+exporter.reveal_url_prefix = "reveal.js/"
 exporter.reveal_transition = "none"
 # exporter.reveal_theme = "blood"
 
