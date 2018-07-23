@@ -7,18 +7,22 @@ import nbconvert
 
 nb_name = 'mathpsych-2018-slides'
 
-exporter = nbconvert.SlidesExporter()
-# exporter.reveal_url_prefix = "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0"
-exporter.reveal_url_prefix = "reveal.js/"
-exporter.reveal_transition = "none"
-# exporter.reveal_theme = "blood"
+exporter_standalone = nbconvert.SlidesExporter()
+exporter_standalone.reveal_url_prefix = "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0"
+exporter_standalone.reveal_transition = "none"
+
+exporter_local = nbconvert.SlidesExporter()
+exporter_local.reveal_url_prefix = "reveal.js/"
+exporter_local.reveal_transition = "none"
 
 writer = nbconvert.writers.FilesWriter()
 
 def export_slides():
     print("regenerating {}".format(nb_name))
-    slides, resources = exporter.from_filename("{}.ipynb".format(nb_name))
-    writer.write(slides, resources, notebook_name=nb_name)
+    slides, resources = exporter_local.from_filename("{}.ipynb".format(nb_name))
+    writer.write(slides, resources, notebook_name="{}.local".format(nb_name))
+    slides_standalone, resources_standalone = exporter_standalone.from_filename("{}.ipynb".format(nb_name))
+    writer.write(slides_standalone, resources_standalone, notebook_name=nb_name)
 
 export_slides()
 
