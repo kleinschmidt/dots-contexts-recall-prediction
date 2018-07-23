@@ -1,3 +1,79 @@
+.reveal div {
+    font-family: "Arimo", "Arial", "sans-serif";
+    color: #666;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+    font-family: "Arimo", "Arial", "sans-serif";
+    font-weight: lighter;
+    color: #222;
+    text-transform: lowercase;
+}
+
+.reveal h1 em, .reveal h2 em, .reveal h3 em, .reveal h4 em {
+    font-weight: bold;
+    font-style: normal;
+    
+}
+
+.reveal h2.old {
+    color: #aaa;
+}
+
+.reveal h2.authors {
+    color
+}
+
+.reveal h1 {
+    font-size: 300%;
+}
+
+div.intro {
+    margin-top: 10%;
+}
+
+div.intro p {
+    color: #666;
+    font-size: 200%;
+    margin: 0px;
+    line-height: 110%;
+}
+
+div.intro p.big {
+    color: #000;
+    /* text-transform: uppercase; */
+    font-style: italic;
+    font-weight: bold;
+    font-size: 400%;
+    margin: 0px;
+}
+
+span.citation {
+    font-size: 80%;
+    color: #aaa;
+}
+
+
+
+
+.model {
+    color: #009af9;
+}
+
+.blue {
+    color: #009af9;
+}
+
+.green {
+    color: #3da44d;
+}
+
+.red {
+    color: #e26f46;
+}
+
+/* hide jupyter input/output stuff except figures */
+
 div.input {
     display: none;
 }
