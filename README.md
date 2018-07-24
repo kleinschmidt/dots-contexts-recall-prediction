@@ -6,6 +6,6 @@
 
 ## MathPsych 2018
 
-[slides](mathpsych-2018-slides.slides.html)
+[live slides](www.davekleinschmidt.com/dots-contexts-recall-prediction/mathpsych-2018-slides.slides.html#/)
 
 [Jupyter notebook](https://osf.io/vbhna/)
