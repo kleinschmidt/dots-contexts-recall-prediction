@@ -12,7 +12,8 @@ using
     Distributions,
     ConjugatePriors,
     JuliennedArrays,
-    StatsBase
+    StatsBase,
+    LinearAlgebra
 
 using ConjugatePriors:
     NormalInverseWishart,
@@ -38,7 +39,7 @@ ConjugatePriors.posterior(c::Component) = ConjugatePriors.posterior(c.prior, c.s
 function recall_est(x::AbstractVector{Float64}, Sx::Matrix{Float64}, c::Component{NormalInverseWishart{Float64}}) 
     Sinv_x = inv(Sx)
     post = posterior(c)
-    Sinv_mem = full(inv(post.Lamchol)) .* (post.kappa / (1+post.kappa) * (post.nu - post.dim + 1))
+    Sinv_mem = Matrix(inv(post.Lamchol)) .* (post.kappa / (1+post.kappa) * (post.nu - post.dim + 1))
     Sinv_total = Sinv_x + Sinv_mem
     return Sinv_total \ (Sinv_mem * post.mu + Sinv_x * x)
 end
@@ -157,7 +158,7 @@ DataFrames.DataFrame(pf::PredictionFilter) =
               xys_mod = pf.predictions)
 
 function filter!(pf::PredictionFilter, data::AbstractDataFrame)
-    ranges = accumulate( (ran, idx) -> ran.stop+1:idx, 0:0, pf.pred_points)
+    ranges = accumulate( (ran, idx) -> ran.stop+1:idx, pf.pred_points, init=0:0)
     datavecs = extract_data(data, pf.particles)
     data_views = view.((datavecs, ), ranges)
     for (dat, t) in zip(data_views, pf.pred_delays)

@@ -1,3 +1,4 @@
+using Distributed
 
 @everywhere using
     DataFrames,
@@ -7,7 +8,8 @@
     Distributions,
     ConjugatePriors,
     JuliennedArrays,
-    StatsBase
+    StatsBase,
+    LinearAlgebra
 
 @everywhere include("../modeling.jl")
 @everywhere include("../experiments.jl")
@@ -21,7 +23,7 @@
                                          Particles.StickyCRP(params[:α], params[:ρ]))
 
         # set up recall model
-        rf = DotLearning.RecallFilter(ps, eye(2)*params[:Sσ])
+        rf = DotLearning.RecallFilter(ps, Matrix(params[:Sσ]I, 2, 2))
 
         # set up prediction points and distances (wraps recall model)
         pf = DotLearning.PredictionFilter(rf, pred[:respnr], pred[:pred], 100)
@@ -38,7 +40,11 @@ end
 
 using JLD2
 
-@load "../prior_empirical.jld2"
+# @load "../prior_empirical.jld2"
+# load parameters to get around LinAlg → LinearAlgebra rename
+@load "../prior_empirical_params.jld2"
+prior_optimized = NormalInverseWishart(μ, κ, Λ, ν)
+
 @load "../data/dots2014.jld2"
 
 
@@ -48,8 +54,8 @@ pred[:pred] = round.(Int, pred[:pred])
 subjs = unique(recall[:subjid1])
 
 viewby(df, col, val) = view(df, df[col] .== val)
-recall_bysub = viewby.(recall, :subjid1, subjs)
-pred_bysub = viewby.(pred, :subjid1, subjs)
+recall_bysub = viewby.(Ref(recall), :subjid1, subjs)
+pred_bysub = viewby.(Ref(pred), :subjid1, subjs)
 
 expts = experiments((recall_bysub, pred_bysub),
                     prior = [prior_optimized],
