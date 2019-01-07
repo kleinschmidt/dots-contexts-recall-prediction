@@ -69,7 +69,7 @@ expts = experiments((recall_bysub, pred_bysub),
                     ρ = [0.1, 0.5, 0.9],
                     n = [100],
                     Sσ = [0.01, 0.1, 1.0].^2,
-                    batch = [:run2],
+                    batch = [:run3],
                     iter = [1:10;])
 
 
