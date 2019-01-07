@@ -71,7 +71,7 @@ mutable struct Result{F,R}
 end
 
 Base.show(io::IO, r::Result) =
-    print(io, "Result of $(r.experiment): $(r.result)")
+    print(io, "$(typeof(r.result)) Result of $(r.experiment)")
 
 function Base.run(f::F, ex::Experiment) where F<:Function
     Random.seed!(ex.seed)
@@ -79,7 +79,7 @@ function Base.run(f::F, ex::Experiment) where F<:Function
         try
             result = f(ex.params, ex.data)
         catch e
-        result = e
+            result = e
         end
         Result(ex, f, result)
     end
