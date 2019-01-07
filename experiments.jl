@@ -37,6 +37,22 @@
 # and something that allows you to grab the result.  it's just a sort of
 # memoization.
 
+module Experiments
+
+using
+    Random,
+    Distances
+
+export
+    Experiment,
+    Result,
+    experiments,
+    arrayofdicts,
+    dictofarrays,
+    mse,
+    cosinesim,
+    summarize
+
 mutable struct Experiment{D}
     params::Dict{Symbol, Any}
     data::D
@@ -58,7 +74,7 @@ Base.show(io::IO, r::Result) =
     print(io, "Result of $(r.experiment): $(r.result)")
 
 function Base.run(f::F, ex::Experiment) where F<:Function
-    srand(ex.seed)
+    Random.seed!(ex.seed)
     let result
         try
             result = f(ex.params, ex.data)
@@ -136,3 +152,6 @@ cosinesim(data, model) = 1 - mean(Distances.colwise(CosineDist(),
 
 summarize(r::Result, f::Function) = f(r.experiment.data, r.result)
 summarize(r::Result; fs...) = merge(r.experiment.params, Dict(k=>summarize(r, v) for (k,v) in fs))
+
+
+end                             # module Experiments
