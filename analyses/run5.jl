@@ -1,4 +1,7 @@
+# copy of run 3, using fearnhead filter 
+
 using Distributed, Dates
+batch = :run5
 
 # setup:
 @everywhere begin
@@ -23,9 +26,9 @@ using Distributed, Dates
         println(join(["$k=>$v" for (k,v) in params if k != :prior], ", "))
         
         map(rp_data...) do recall, pred
-            ps =  Particles.ChenLiuParticles(params[:n],
-                                             params[:prior],
-                                             Particles.StickyCRP(params[:α], params[:ρ]))
+            ps =  Particles.FearnheadParticles(params[:n],
+                                               params[:prior],
+                                               Particles.StickyCRP(params[:α], params[:ρ]))
 
             # set up recall model
             rf = DotLearning.RecallFilter(ps, Matrix(params[:Sσ]I, 2, 2))
@@ -69,9 +72,9 @@ expts = experiments((recall_bysub, pred_bysub),
                     ρ = [0.1, 0.5, 0.9],
                     n = [100],
                     Sσ = [0.01, 0.1, 1.0].^2,
-                    batch = [:run3],
+                    batch = [batch],
                     iter = [1:10;])
 
 
 results = pmap(expts) do ex run(recall_predict, ex) end
-@save "../results/run3-$(DateTime(now())).jld2" expts results recall_predict, typeof(recall_predict)
+@save "../results/$batch-$(DateTime(now())).jld2" expts results recall_predict, typeof(recall_predict)
