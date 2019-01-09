@@ -41,7 +41,8 @@ module Experiments
 
 using
     Random,
-    Distances
+    Distances,
+    Statistics
 
 export
     Experiment,
