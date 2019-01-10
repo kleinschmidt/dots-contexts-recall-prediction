@@ -40,3 +40,11 @@
    could look at cosine similarity between displacement vectors.  or even dot
    product, normalized by the length of one of the vectors (to get a measure of
    the mismatch in size _and_ direction)
+* Better model metrics
+** Likelihood of recalled location
+   Could be done fairly easy by sampling from the posterior for the cluster
+   mean/variance, then doing cue combo, and computing likelihood under that, and
+   averaging.  That might require a lot of samples though which would get pretty
+   expensive
+* Control models
+  No memory for previous clusters (just detect change)
