@@ -1,0 +1,126 @@
+% 
+% Annual Cognitive Science Conference
+% Sample LaTeX Paper -- Proceedings Format
+% 
+
+% Original : Ashwin Ram (ashwin@cc.gatech.edu)       04/01/1994
+% Modified : Johanna Moore (jmoore@cs.pitt.edu)      03/17/1995
+% Modified : David Noelle (noelle@ucsd.edu)          03/15/1996
+% Modified : Pat Langley (langley@cs.stanford.edu)   01/26/1997
+% Latex2e corrections by Ramin Charles Nakisa        01/28/1997 
+% Modified : Tina Eliassi-Rad (eliassi@cs.wisc.edu)  01/31/1998
+% Modified : Trisha Yannuzzi (trisha@ircs.upenn.edu) 12/28/1999 (in process)
+% Modified : Mary Ellen Foster (M.E.Foster@ed.ac.uk) 12/11/2000
+% Modified : Ken Forbus                              01/23/2004
+% Modified : Eli M. Silk (esilk@pitt.edu)            05/24/2005
+% Modified : Niels Taatgen (taatgen@cmu.edu)         10/24/2006
+% Modified : David Noelle (dnoelle@ucmerced.edu)     11/19/2014
+
+%% Change "letterpaper" in the following line to "a4paper" if you must.
+
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{cogsci}
+\usepackage{pslatex}
+
+\usepackage[american]{babel}
+\usepackage[style=apa,backend=biber]{biblatex}
+
+% get rid of month and day
+\AtEveryBibitem{
+  \clearfield{labelmonth}
+  \clearfield{labelday}
+}
+
+\setlength{\bibhang}{\parindent}
+
+\usepackage{csquotes}
+\DeclareLanguageMapping{american}{american-apa}
+\addbibresource{$bibliography$}
+
+
+\usepackage[unicode=true]{hyperref}
+
+\hypersetup{
+$if(title-meta)$
+            pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+            pdfauthor={$author-meta$},
+$endif$
+$if(keywords)$
+            pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+$if(colorlinks)$
+            colorlinks=true,
+            linkcolor=$if(linkcolor)$$linkcolor$$else$Maroon$endif$,
+            citecolor=$if(citecolor)$$citecolor$$else$Blue$endif$,
+            urlcolor=$if(urlcolor)$$urlcolor$$else$Blue$endif$,
+$else$
+            pdfborder={0 0 0},
+$endif$
+            breaklinks=true}
+
+
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+\def\tightlist{}
+
+\usepackage{float}
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[tbp]
+} {
+    \endorigfigure
+}
+
+          
+
+
+\title{$title$}
+ 
+\author{%
+  $for(author)$
+  {\large \bf $author.name$ ($author.email$)} \\
+  $for(author.affiliation)$$author.affiliation$$sep$\\ $endfor$
+  $sep$\AND
+  $endfor$
+}
+
+
+\begin{document}
+
+\maketitle
+
+
+\begin{abstract}
+  $abstract$
+  
+  $if(keywords)$\textbf{Keywords:} $for(keywords)$$keywords$$sep$; $endfor$ $endif$
+\end{abstract}
+
+
+$body$
+
+
+% \bibliographystyle{apacite}
+
+% \setlength{\bibleftmargin}{.125in}
+% \setlength{\bibindent}{-\bibleftmargin}
+
+\printbibliography
+
+
+\end{document}

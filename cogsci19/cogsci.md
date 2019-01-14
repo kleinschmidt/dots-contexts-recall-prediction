@@ -31,13 +31,34 @@ sampling require multiple sweeps through the data to capture all uncertainty, to
 potentially revise previous decisions in light of later data.  In order to query
 the model's uncertain beliefs at various points throughout the 
 
-### Encoding (clustering) model
+### Context model
 
-For the clustering component of the model, we used a "Hibachi grill" process
-mixture model.  The Hibachi grill process defines a prior distribution on
-cluster labels $p(z_1, \ldots, z_n)$ q which is like a standard Dirichlet
-process with an additional (constant) probability of choosing the same cluster
-as the previous
+We modeled learners inferences about the underlying context on each trial as a
+sequential Bayesian non-parametric clustering problem.  The goal of the learner
+in this model is to infer the cluster assignment $z_i$ of observation $x_i$,
+given the previous observations $x_{1:i-1}$ and their labels $z_{1:i-1}$:
+
+$$p(z_i=j | x_{1:i}, z_{1:i-1}) \propto p(x_i | z_i=j, z_{1:i-1}, x_{1:i-1})
+p(z_i=j | z_{1:i-1}) $$
+
+The sequential prior $p(z_i=j | z_{1:i-1})$ is a "Hibachi Grill Process"
+[@Qian2014], which is like the standard Chinese Restaurant Process (CRP) with an
+added (constant) probability assigned to the previous state.  This corresponds
+to the following generative model: with probability $0 < \rho < 1$ the last
+state is picked, $j=z_{i-1}$, and with probability $1-\rho$ a component is
+chosen from a Chinese Restaurant Process with concentration $\alpha$, which
+assigns probability to each state proportional to the number of observations
+assigned to it already[^counts], and creates a new state with probability
+proportional to $\alpha > 0$.
+
+[^counts]: One important difference from a standard CRP is that only non-sticky
+    transitions count for the purposes of sampling new states from the CRP.
+
+The likelihood
+$p(x_i | z_i=j, z_{1:i-1}, x_{1:i-1}) = p(x_i | x_{\{k; z_k=j\}})$ is computed
+by marginalizing over the mean and covariance of a multivariate normal
+distribution given the data points previously assigned to that cluster and a
+conjugate Normal-Inverse Wishart prior [@Gelman2003].
 
 ### Recall
 
@@ -66,4 +87,8 @@ $$
 
 ### Prediction
 
-To model subjects predictions about future locations, we simpl
+To model subjects predictions about future locations, we sample 100 locations
+from the posterior predictive distribution of the population of particles.  To
+sample one predicted location at a $n$ trials in the future, we sample a
+particle from the population according to their weights, draw a sample of $n$
+future states from that particle's Hibachi Grill Process, 
