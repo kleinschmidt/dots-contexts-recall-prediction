@@ -111,9 +111,11 @@ version = "1.1.1"
 
 [[ConjugatePriors]]
 deps = ["Distributions", "LinearAlgebra", "PDMats", "Random", "SpecialFunctions", "Statistics", "StatsFuns"]
-git-tree-sha1 = "f241b76e7d0e2df96051ecf75b4f623fc2379758"
+git-tree-sha1 = "873d667e91363b63c3e0d08c63338b9ec7b246ba"
+repo-rev = "dfk/abstractarray"
+repo-url = "git@github.com:JuliaStats/ConjugatePriors.jl.git"
 uuid = "1624bea9-42b1-5fc1-afd3-e96f729c8d6c"
-version = "0.3.2"
+version = "0.3.2+"
 
 [[Contour]]
 deps = ["LinearAlgebra", "StaticArrays", "Test"]
