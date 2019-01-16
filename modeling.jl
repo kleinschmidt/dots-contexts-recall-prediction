@@ -36,7 +36,7 @@ using Distributions: MvNormalStats
 ConjugatePriors.posterior(c::Component) = ConjugatePriors.posterior(c.prior, c.suffstats)
 
 # uses the expected covariance matrix
-function recall_est(x::AbstractVector{Float64}, Sx::Matrix{Float64}, c::Component{NormalInverseWishart{Float64}}) 
+function recall_est(x::AbstractVector{Float64}, Sx::Matrix{Float64}, c::Component{<:NormalInverseWishart}) 
     Sinv_x = inv(Sx)
     post = posterior(c)
     Sinv_mem = Matrix(inv(post.Lamchol)) .* (post.kappa / (1+post.kappa) * (post.nu - post.dim + 1))
