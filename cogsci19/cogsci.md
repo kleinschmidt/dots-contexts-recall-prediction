@@ -169,11 +169,37 @@ The particle filter algorithm was implemented in Julia 1.0 [@Bezanson2017].
 ## Clustering
 
 First, how well does this algorithm do at recovering the underlying cluster
-structure?
+structure?  This is not a straightforward question to answer: each particle in
+the population represents a potentially different assignment of observations to
+clusters, and the cluster indices used in one particle might not align with
+those in another particle.  To get around this we look at the assignment
+similarity matrix, which is an $N\times N$ matrix, where element $(i,j)$ is the
+probability that trials $i$ and $j$ are assigned to the same cluster.  This
+probability is calculated by averaging across all particles in the population
+according to their weight.
+
+```julia
+
+```
 
 ## Recall
 
+Next, we assess how well the inferred contexts can predict recall.  We compare
+the model's performance against three baselines.  First, we compare it against a
+"known clusters" model, which uses the true (experimenter defined) clusters with
+the same Bayesian cue combination model of encoding and recall.  Second, we
+compare it to two baselines based on previous literature: one that always biases
+recall towards the center (the average location of all trials), and one that
+baises recall towards the mean radius [as in @Huttenlocher1991].  The metric we
+use for comparison is the cosine similarity of the recall deviation (the vector
+from the studied location to the recalled location).  We chose this metric
+because it relies on fewer free parameters than directly estimating the
+likelihood of the recalled location given each of the models, and is less
+sensitive to outliers than the actual distance.
 
+```julia
+
+```
 
 ## Prediction
 
