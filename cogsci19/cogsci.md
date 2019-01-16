@@ -21,15 +21,12 @@ context.
 
 ## Modeling
 
-Bayesian non-parametric clustering
-
-Use sequential monte carlo.  Why?  Cognitively plausible (online) AND
-methodological reasons: 
-
-Need to query model throughout exposure; offline approximations like Gibbs
-sampling require multiple sweeps through the data to capture all uncertainty, to
-potentially revise previous decisions in light of later data.  In order to query
-the model's uncertain beliefs at various points throughout the 
+Our model has three components.  First, we model how people infer the assignment
+of stimuli to contexts as nonparametric Bayesian clustering, approximated with a
+particle filter.  Second, we model encoding and recall of locations as Bayesian
+cue combination with a prior from the context.  Third, we model subjects'
+predictions about future locations via the posterior predictive distribution of
+the context model.
 
 ### Context model
 
@@ -73,7 +70,7 @@ labels, denoted $z_{1:i-1}^{(k)}$.  This population of particles represents an
 _importance sample_ from the posterior.  When a new observation $x_i$ comes in,
 the population moves to target the updated posterior $p(z_{1:i} | x_{1:i})$.
 There are many algorithms to do this, and the effectiveness of a particular
-algorithm will depend on the problem.  We use the algorithm of @Chen1999 [as
+algorithm will depend on the problem.  We use the algorithm of @Chen2000 [as
 described in @Fearnhead2004]: for each particle $k$, a state assignment is
 sampled for $x_i$ according to $p(z_i | x_{1:i}, z^{(k)}_{1:i-1})$, and the
 weight $w^{(k)}_i$ is updated by the ratio of
@@ -104,9 +101,9 @@ constraints on learning, and in particular does not assume that learners can go
 back and revisit each observation and their decisions about it.  This class of
 models thus provides a possible bridge between computational and algorithmic
 level approaches to modeling learning and memory [@Sanborn2010;
-@Kleinschmidt2018].
+@Kleinschmidt2018b].
 
-### Recall
+### Encoding and recall
 
 The noisy memory trace is modeled as a normal distribution centered at the
 studied location $x$ with an isometric covariance matrix $\Sigma_x$, whose
