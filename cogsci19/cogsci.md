@@ -1,10 +1,25 @@
 # Notes
 
-When remembering a particular item people draw on context as an additional
-source of information (Emin's paper, Ting, Huttenlocher).  Can model this as a
-kind of Bayesian cue combination: combine uncertain memory trace (likelihood)
-contextual information (prior) to infer the distribution of properties of the
-recalled item (posterior).
+When remembering a particular item people draw on the _context_ that item
+occurred in as an additional source of information [e.g., @Orhan2013; @Qian2014;
+@Huttenlocher1991].  For instance, @Huttenlocher1991 found that immediate
+spatial recall of a location in a circular area is biased towards the average
+radius of all locations in the experiment.  They proposed that memory for an
+individual item's location is encoded at two levels: the item itself, and the
+_category_ it was assigned to.  Building on this, @Robbins2014 found that when
+people are exposed to an environment where there are multiple clusters
+
+((( Bayesian models of memory in other domains )))
+
+Here, we evaluate whether Bayesian non-parametric clustering can explain peoples
+behavior when the context occurs over time.
+
+
+
+Can model
+this as a kind of Bayesian cue combination: combine uncertain memory trace
+(likelihood) contextual information (prior) to infer the distribution of
+properties of the recalled item (posterior).
 
 Begs the question what _is_ context?  It's not handed down by god.  Can think of
 this as another level of inference: infer jointly which context a particular
@@ -14,6 +29,8 @@ We treat multi-context memory as a non-parametric clustering problem: during
 encoding, people must infer the _context_ (cluster) that that item belongs to,
 which could any of the contexts they have encountered thus far, or a new
 context.
+
+
 
 ## Data
 
@@ -136,6 +153,28 @@ To model subjects predictions about future locations, we sample 100 locations
 from the posterior predictive distribution of the population of particles.  To
 sample one predicted location at a $n$ trials in the future, we sample a
 particle from the population according to their weights, draw a sample of $n$
-future states from that particle's Hibachi Grill Process, 
+future states from that particle's Hibachi Grill Process, and then sample one
+point from the posterior predictive distribution of the resulting cluster.  In
+the case that the predicted cluster is a new cluster, we sample from the prior
+predictive.
+
+## Procedure
+
+To evaluate this model, we simulated the data from @Robbins2014. 
+
+The particle filter algorithm was implemented in Julia 1.0 [@Bezanson2017].
 
 # Results
+
+## Clustering
+
+First, how well does this algorithm do at recovering the underlying cluster
+structure?
+
+## Recall
+
+
+
+## Prediction
+
+# Conclusion
