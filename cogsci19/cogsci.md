@@ -114,11 +114,14 @@ meaning the complexity is only $O(KN)$.  This means it's possible to effectively
 model longer experiments.
 
 Second, an online learning algorithm better approximates _psychological_
-constraints on learning, and in particular does not assume that learners can go
-back and revisit each observation and their decisions about it.  This class of
-models thus provides a possible bridge between computational and algorithmic
-level approaches to modeling learning and memory [@Sanborn2010;
-@Kleinschmidt2018b].
+constraints on learning, and in particular unlike batch MCMC algorithms does not
+assume that learners can go back and revisit each observation and their
+decisions about it.[^revise] This class of models thus provides a possible
+bridge between computational and algorithmic level approaches to modeling
+learning and memory [@Sanborn2010; @Kleinschmidt2018b].
+
+[^revise]: These approaches also do not _preclude_ revising previous decisions,
+    they just do not _require_ it.
 
 ### Encoding and recall
 
