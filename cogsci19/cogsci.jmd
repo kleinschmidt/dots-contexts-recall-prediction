@@ -181,9 +181,7 @@ probability that trials $i$ and $j$ are assigned to the same cluster.  This
 probability is calculated by averaging across all particles in the population
 according to their weight.
 
-```julia
 
-```
 
 ## Recall
 
@@ -199,10 +197,6 @@ from the studied location to the recalled location).  We chose this metric
 because it relies on fewer free parameters than directly estimating the
 likelihood of the recalled location given each of the models, and is less
 sensitive to outliers than the actual distance.
-
-```julia
-
-```
 
 ## Prediction
 
