@@ -1,3 +1,60 @@
+```{julia; echo=false; results="hide"}
+using Revise
+
+using 
+    LinearAlgebra, 
+    Random,
+    Statistics
+
+using 
+    Plots,
+    PlotThemes,
+    StatPlots,
+    RecipesBase,
+    Colors, 
+    Images,
+    DataFrames,
+    DataFramesMeta,
+    Underscore,
+    StatsBase,
+    ConjugatePriors,
+    Particles,
+    Distances, 
+    JuliennedArrays
+
+x = DataFrame(a = 1:10)
+using JLD2
+@save "x.jld2" x
+@load "x.jld2"
+x
+```
+
+```julia
+
+theme(:default, markerstrokecolor=:white)
+
+flip(x::AbstractVector) = reshape(x, (1,:))
+
+const It = Base.Iterators
+
+include("modeling.jl")
+using .DotLearning
+include("experiments.jl")
+using .Experiments
+include("plots.jl")
+
+using JLD2
+using Compat
+@load "data/dots2014.jld2"
+# load the prior _parameters_ to get around
+@load "prior_empirical_params.jld2"
+prior_optimized = ConjugatePriors.NormalInverseWishart(μ, κ, Λ, ν)
+@load "results/run3-2019-01-07T21:23:16.243.jld2" results expts
+
+rho(args...) = sqrt(sum(args.^2))
+```
+
+
 # Notes
 
 When remembering a particular item people draw on the _context_ that item
