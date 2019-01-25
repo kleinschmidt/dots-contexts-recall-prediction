@@ -1,3 +1,12 @@
+---
+title: "A Bayesian model of memory in a multi-context environment"
+author:
+- Dave F. Kleinschmidt
+- Pernille Hemmer
+bibliography: cogsci.bib
+---
+
+
 ```{julia; echo=false; results="hide"}
 using Revise
 
@@ -22,36 +31,38 @@ using
     Distances, 
     JuliennedArrays
 
-x = DataFrame(a = 1:10)
-using JLD2
-@save "x.jld2" x
-@load "x.jld2"
-x
-```
-
-```julia
-
 theme(:default, markerstrokecolor=:white)
 
 flip(x::AbstractVector) = reshape(x, (1,:))
 
 const It = Base.Iterators
 
-include("modeling.jl")
+Revise.track("../modeling.jl")
 using .DotLearning
-include("experiments.jl")
+Revise.track("../experiments.jl")
 using .Experiments
-include("plots.jl")
+include("../plots.jl")
 
 using JLD2
-using Compat
-@load "data/dots2014.jld2"
+@load "../data/dots2014.jld2"
 # load the prior _parameters_ to get around
-@load "prior_empirical_params.jld2"
+@load "../prior_empirical_params.jld2"
 prior_optimized = ConjugatePriors.NormalInverseWishart(μ, κ, Λ, ν)
-@load "results/run3-2019-01-07T21:23:16.243.jld2" results expts
+import .Experiments: cosinesim
+cosinesim(d) = cosinesim(d,d)
 
 rho(args...) = sqrt(sum(args.^2))
+```
+
+```julia
+
+@load "../results/run3-2019-01-07T21:23:16.243-recalled-predicted.jld2" recalled_all predicted_all
+
+recalled_summaries = by(recalled_all, [:α, :ρ, :Sσ]) do d
+    DataFrame(cos=cosinesim(d),
+              mse=Experiments.mse(d,d))
+end
+
 ```
 
 
@@ -226,7 +237,30 @@ The particle filter algorithm was implemented in Julia 1.0 [@Bezanson2017].
 
 # Results
 
+```{julia; }
+
+# recall data from one subject
+recall1 = @where(recall, :subjid1 .== 7)
+
+rf = RecallFilter(ChenLiuParticles(100,
+                                   prior_optimized,
+                                   StickyCRP(0.01, 0.9)),
+                  Matrix(0.01I,2,2))
+filter!(rf, extract_data(recall1, rf))
+
+recalled1 = hcat(recall1, DataFrame(rf))
+
+```
+
 ## Clustering
+
+```{julia; }
+
+plot(plot(show_assignment_similarity(rf), title="Inferred clusters"),
+     plot(Gray.(@with(recall1, :block .== :block')), title="True blocks"),
+     axis=false, aspect_ratio=:equal, layout=(1,2), size=(800,400))
+
+```
 
 First, how well does this algorithm do at recovering the underlying cluster
 structure?  This is not a straightforward question to answer: each particle in
