@@ -254,7 +254,7 @@ recalled1 = hcat(recall1, DataFrame(rf))
 
 ## Clustering
 
-```{julia; }
+```{julia; label="assign-mats"; fig_cap="Assignment similarity matrices for one population of particles (left) and the experimenter-defined clusters (right)"}
 
 plot(plot(show_assignment_similarity(rf), title="Inferred clusters"),
      plot(Gray.(@with(recall1, :block .== :block')), title="True blocks"),
