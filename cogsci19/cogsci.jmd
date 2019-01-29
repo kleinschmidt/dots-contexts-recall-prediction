@@ -16,6 +16,12 @@ bibliography: cogsci.bib
 ```{julia; echo=false; results="hide"}
 using Revise
 
+using Weave
+Weave.set_chunk_defaults(Dict{Symbol,Any}(
+    :results => "hide",
+    :echo => false
+))
+
 using 
     LinearAlgebra, 
     Random,
