@@ -1,8 +1,14 @@
 ---
 title: "A Bayesian model of memory in a multi-context environment"
 author:
-- Dave F. Kleinschmidt
-- Pernille Hemmer
+- name: "Dave F. Kleinschmidt"
+  email: "dave.kleinschmidt@rutgers.edu"
+- name: "Pernille Hemmer"
+  email: "pernille.hemmer@rutgers.edu"
+affiliation:
+- "Department of Psychology"
+- "Rutgers New Brunswick"
+- "Piscawtaway NJ, 08854"
 bibliography: cogsci.bib
 ---
 
