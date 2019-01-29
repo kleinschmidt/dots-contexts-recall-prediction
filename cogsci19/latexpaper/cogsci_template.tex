@@ -93,12 +93,17 @@ $endif$
  
 \author{%
   $for(author)$
-  {\large \bf $author.name$ ($author.email$)} \\
-  $for(author.affiliation)$$author.affiliation$$sep$\\ $endfor$
-  $sep$\AND
+  {\large \bf $author.name$ ($author.email$)} %
+  $if(author.affiliation)$\\    % handle author-specific affiliations
+  $for(author.affiliation)$$author.affiliation$$sep$\\% $endfor$
+  $endif$ %                     % end author affiliations
+  $sep$\AND %
+  $endfor$ %                    % end for(author)
+  $if(affiliation)$             % handle standalone affiliations
+  $for(affiliation)$$affiliation$$sep$\\  %
   $endfor$
+  $endif$%
 }
-
 
 \begin{document}
 
