@@ -6,9 +6,9 @@ using
 
 function make()
     weave("cogsci.jmd",
-          doctype="pandoc",
+          doctype="pandoc2pdf",
           pandoc_options=["--filter", "pandoc-crossref", 
                           "--template", "latexpaper/cogsci_template.tex",
-                          "--biblatex"],
+                          "--biblatex", "--pdf-engine=pdflatex"],
           mod=Main)
 end
