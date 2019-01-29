@@ -18,7 +18,7 @@ using Revise
 
 using Weave
 Weave.set_chunk_defaults(Dict{Symbol,Any}(
-    :results => "hide",
+    :results => "hidden",
     :echo => false
 ))
 
