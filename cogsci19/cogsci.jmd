@@ -369,11 +369,11 @@ bs_center, bs_avgrho = @_ baseline_good |>
 ```{julia; label="cosinesim-by-param"; fig_cap="Cosine-similarity of model predicted and actual recall deviations across parameter values.  Gray lines show baselines: always deviate toward center, average radius, and center of true clusters"}
 
 @df(@where(recalled_summaries, :Sσ .≈ 0.01),
-    plot(:α, :cos, group=:ρ, xscale=:log10, 
-         xlims=(10^-2.5, 10^1.5), ylims=(0, 0.115), seriestype=:line,
-         xlabel="Eagerness to create new clusters (DP concentration)",
+    plot(:α, :cos, ribbon = (:cos .- :cos_low, :cos_high .- :cos), group=:ρ, xscale=:log10, 
+         xlims=(10^-2.5, 10^1.5), ylims=(0, 0.12), seriestype=:line,
+         xlabel="Eagerness to create new clusters (DP concentration \\alpha)",
          ylabel=("Cosine sim. with behavior"),
-        legend=:bottomright, legend_title="Stickiness", line=2))
+         legend=:bottomright, legend_title="Stickiness \\rho", line=2))
 
 baseline_x = [10^-2.1, 10^1.1]
 
