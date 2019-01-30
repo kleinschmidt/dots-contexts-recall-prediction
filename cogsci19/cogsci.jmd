@@ -41,7 +41,8 @@ using
     ConjugatePriors,
     Particles,
     Distances, 
-    JuliennedArrays
+    JuliennedArrays,
+    Bootstrap
 
 theme(:default, markerstrokecolor=:white)
 
@@ -70,9 +71,20 @@ rho(args...) = sqrt(sum(args.^2))
 
 @load "../results/run3-2019-01-07T21:23:16.243-recalled-predicted.jld2" recalled_all predicted_all
 
-recalled_summaries = by(recalled_all, [:α, :ρ, :Sσ]) do d
-    DataFrame(cos=cosinesim(d),
-              mse=Experiments.mse(d,d))
+summaries_by_iter = by(recalled_all, [:α, :ρ, :Sσ, :iter]) do d
+    DataFrame(cos=cosinesim(d), mse=Experiments.mse(d,d))
+end
+
+boot_ci(x, n=1000, cil=0.95) = confint(bootstrap(mean, x, BasicSampling(n)),
+                                       BasicConfInt(cil))
+
+recalled_summaries = by(summaries_by_iter, [:α, :ρ, :Sσ]) do d
+    # collect only necessary here because of Bootstrap.jl#42, can remove once
+    # #43 is merged
+    (c, clow, chigh), = boot_ci(collect(d[:cos]))
+    (m, mlow, mhigh), = boot_ci(collect(d[:mse]))
+    DataFrame(cos=c, cos_low=clow, cos_high=chigh,
+              mse=m, mse_low=mlow, mse_high=mhigh)
 end
 
 ```
