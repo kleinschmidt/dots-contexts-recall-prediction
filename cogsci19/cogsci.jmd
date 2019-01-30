@@ -366,6 +366,19 @@ bs_center, bs_avgrho = @_ baseline_good |>
 @df recalled1 quiver!(:x, :y, quiver=(:x_mod .- :x, :y_mod .- :y), color=:black)
 ```
 
+Next, we assess how well the inferred contexts can predict recall.  Figure
+-@fig:example-subj-recall shows one subject's actual deviations from studied to
+recalled locations (blue arrows) versus the model's predicted deviations (black
+arrows).  To quantify goodness of fit, we use the cosine similarity of the
+model's and subject's recall deviation (i.e., blue and black arrows in
+@Fig:example-subj-recall).  We chose this metric because it is less sensitive to
+large outlier responses than mean-squared error, and because approximations of
+the likelihood of a subject's response given the model is highly sensitive to
+free parameters and difficult to reliably estimate.  Moreover, the baseline
+models we compare against also do not have straightforward likelihood models,
+but they _do_ make straightforward predictions about the directions of recall
+deviations.
+
 ```{julia; label="cosinesim-by-param"; fig_cap="Cosine-similarity of model predicted and actual recall deviations across parameter values.  Gray lines show baselines: always deviate toward center, average radius, and center of true clusters"}
 
 @df(@where(recalled_summaries, :Sσ .≈ 0.01),
@@ -391,23 +404,15 @@ plot_baseline!(bs_avgrho,
 
 ```
 
-Next, we assess how well the inferred contexts can predict recall.  Figure
--@fig:example-subj-recall shows one subject's actual deviations from studied to
-recalled locations (blue arrows) versus the model's predicted deviations (gray
-arrows).
-
-We compare
-the model's performance against three baselines.  First, we compare it against a
+Figure -@fig:cosinesim-by-param shows the cosine similarity with of all
+subjects' responses with the multi-context Bayesian model.  We compare the
+model's performance against three baselines.  First, we compare it against a
 "known clusters" model, which uses the true (experimenter defined) clusters with
 the same Bayesian cue combination model of encoding and recall.  Second, we
-compare it to two baselines based on previous literature: one that always biases
-recall towards the center (the average location of all trials), and one that
-baises recall towards the mean radius [as in @Huttenlocher1991].  The metric we
-use for comparison is the cosine similarity of the recall deviation (the vector
-from the studied location to the recalled location).  We chose this metric
-because it relies on fewer free parameters than directly estimating the
-likelihood of the recalled location given each of the models, and is less
-sensitive to outliers than the actual distance.
+compare it to two baselines based on previous literature on similar memory
+tasks [@Huttenlocher1991]: one that always biases recall towards the center (the
+average location of all trials), and one that baises recall towards the mean
+radius.
 
 ## Prediction
 
