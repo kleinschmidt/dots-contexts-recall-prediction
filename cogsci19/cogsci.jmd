@@ -266,23 +266,29 @@ The particle filter algorithm was implemented in Julia 1.0 [@Bezanson2017].
 # recall data from one subject
 recall1 = @where(recall, :subjid1 .== 7)
 
-rf = RecallFilter(ChenLiuParticles(100,
-                                   prior_optimized,
-                                   StickyCRP(0.01, 0.9)),
+rf = RecallFilter(FearnheadParticles(100,
+                                     prior_optimized,
+                                     StickyCRP(0.01, 0.9)),
                   Matrix(0.01I,2,2))
 filter!(rf, extract_data(recall1, rf))
-
-recalled1 = hcat(recall1, DataFrame(rf))
-
 ```
 
 ## Clustering
 
 ```{julia; label="assign-mats"; fig_cap="Assignment similarity matrices for one population of particles (left) and the experimenter-defined clusters (right)"}
 
-plot(plot(show_assignment_similarity(rf), title="Inferred clusters"),
-     plot(Gray.(@with(recall1, :block .== :block')), title="True blocks"),
-     axis=false, aspect_ratio=:equal, layout=(1,2), size=(800,400))
+filter_sim = assignment_similarity(rf)
+
+true_clus_sim = @with(recall1, :block .== :block')
+
+euc_dist = @_ recall1 |>
+    @with(_, hcat(:x, :y)) |>
+    Distances.pairwise(Euclidean(), _')
+
+plot(plot(Gray.(filter_sim), title="Inferred clusters"),
+     plot(Gray.(true_clus_sim), title="True blocks"),
+     plot(Gray.(1 .- euc_dist ./ maximum(euc_dist)), title="Euclidean distance"),
+     axis=false, aspect_ratio=:equal, layout=(1,3), size=(1200,400))
 
 ```
 
@@ -296,7 +302,10 @@ probability that trials $i$ and $j$ are assigned to the same cluster.  This
 probability is calculated by averaging across all particles in the population
 according to their weight.
 
-
+@Fig:assign-mats shows the assignment similarty matrix for one subject, based on
+a 100-particle filter with $\alpha=0.01, \rho=0.9$ (left), the true,
+experimenter-defined block structure (middle), and pairwise Euclidean distance
+(right).
 
 ## Recall
 
