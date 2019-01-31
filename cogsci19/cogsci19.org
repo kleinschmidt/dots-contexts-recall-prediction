@@ -1,0 +1,40 @@
+* Drafting paper
+** TODO experiment methods
+** TODO prediction results
+
+   prediction is a more explicit test of what subjects believe the structure of
+   the task to be.
+   
+** TODO introduction
+   What's already been done in this space?  Ting's stuff on stimulus
+   order/bundles.  Memory influenced by structure in the environment
+   (correlations between features).  Memory influenced by statistics of context
+   (Huttenlocher).
+
+   Who was the Gershman student I talked to at mathpsych??  Nicholas Franklin.
+   There's some stuff they're doing on "learning to learn" in multi-armed
+   bandits where there's structure in how rewards shift over time.  they're
+   squarely in the reinforcement learning space here.
+
+   and sarah dubrow is working on similar stuff about multi-context memory
+   right???  event boundaries in episodic memory... (drift or shift, @Dubrow2017)
+
+   and speech perception (although no explicit model of the kind we're proposing
+   here...may be better to mention this in the discussion/conclusion)
+   
+   I think the thing to focus on is that 1) contex provides important
+   information in a wide variety of tasks but 2) it's really hard to find this
+   structure because the search space is large and (especially over time) it's
+   hard-to-impossible to re-evaluate information from the past...once it's gone
+   it's gone (at least up to what you managed to encode)
+
+** TODO discussion/conclusion
+
+*** What are the limitations/caveats
+**** are people really revisiting clusters??
+**** hard to do proper model comparison without likelihood model
+**** no inference of cluster prior, DP concentration, stickiness
+
+*** other domains 
+**** speech perception
+
