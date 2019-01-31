@@ -416,11 +416,15 @@ radius.
 
 First, at the whole range of parameters explored, the multi-context model
 performs better than the center- or mean-radius-biased baselines.  Second,
-except for low stickiness $\rho=0.1$, our model which needs to _infer_ the
-underlying cluster structure in the task matches behavior as well or better than
-the known-cluster baseline, which is given the experimenter-defined clusters.
-Together, these two results suggest that spatial recall in a task with multiple
-contexts is 
+except for low stickiness $\rho=0.1$, our model provides a better fit to human
+behavior than the "known clusters" baseline, which differs from our model only
+in that the true cluster labels are provided for each data point, rather than
+being inferred.  This suggests that, at least according to the cosine similarity
+metric, our (approximate) context-inference model better captures how people
+combine information about the current context during recall than the "ground
+truth" clusters.
+
+
 
 ## Prediction
 
