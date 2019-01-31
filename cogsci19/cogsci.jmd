@@ -438,6 +438,38 @@ predicted_good = @_ predicted_all |>
 
 predicted1 = @where(predicted_good, :subjid1 .== 7)
 
+prediction_deviations = @_ predicted_good |>
+    @transform(_, resp_dev = rho.(:x.-:x_resp, :y.-:y_resp), 
+                  mod_dev = mean.(pairwise.(Ref(Euclidean()), 
+                                            transpose.(hcat.(:x, :y)),
+                                            transpose.(:xys_mod))))
+
+```
+
+```{julia; label="pred-dev"; fig_cap="Predicted and actual deviations from last studied point for prediction task"}
+
+p = @df(prediction_deviations,
+        scatter(:resp_dev, :mod_dev,
+                xlabel="Response deviation",
+                ylabel="Model predicted", 
+                legend_title = "Predictions for next", legend=:bottomright,
+                group=:pred,
+                smooth=true,
+                markerstrokecolor=:white,
+                markeralpha=.3,
+                line=2,
+                aspect_ratio = :equal,
+                size=(800,400)))
+
+@df(by(prediction_deviations, [:pred], :resp_dev=>mean, :mod_dev=>mean),
+    scatter!(p,
+             :resp_dev_mean', :mod_dev_mean',
+             color = (1:3)',    # use the colors for groups 1:3
+             markersize=8,
+             label=""))
+
+plot!(p, 0:.1:maximum(prediction_deviations[:mod_dev]), x->x, color=GrayA(0.2, 0.2), label="")
+
 ```
 
 Our model also captures subjects' predictions about the location of upcoming
