@@ -420,12 +420,28 @@ except for low stickiness $\rho=0.1$, our model provides a better fit to human
 behavior than the "known clusters" baseline, which differs from our model only
 in that the true cluster labels are provided for each data point, rather than
 being inferred.  This suggests that, at least according to the cosine similarity
-metric, our (approximate) context-inference model better captures how people
-combine information about the current context during recall than the "ground
-truth" clusters.
+metric, our context-inference model better captures how people combine
+information about the current context during recall than the "ground truth"
+clusters.
 
 
 
 ## Prediction
+
+```{julia}
+
+predicted_good = @_ predicted_all |>
+    join(_, deletecols!(copy(rec_params_good), :Sσ), on=[:α, :ρ]) |>
+    join(_, @select(recall, :subjid1, :block, :respnr, :x, :y), 
+            on=[:subjid1, :block, :respnr]) |>
+    sort!(_, (:subjid1, :respnr, :pred))
+
+predicted1 = @where(predicted_good, :subjid1 .== 7)
+
+```
+
+Our model also captures subjects' predictions about the location of upcoming
+points at different delays.
+
 
 # Conclusion
