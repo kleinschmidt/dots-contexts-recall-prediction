@@ -689,4 +689,64 @@ intercepts and slopes by subject).
 
 # Discussion
 
+We have demonstrated that human recall and prediction in a multi-context spatial
+memory task can be modeled by a Bayesian model that infers the latent contexts
+via non-parametric clustering.  This model updates its beliefs _online_, one
+observation at a time, with Sequential Monte Carlo.  Exploring a range of
+parameters for the state transition prior, we found that subjects recall
+behavior is best captured with high "stickiness" (prior probability of remaining
+in the same cluster) and low concentration (prior probability of creating a new
+cluster).  Together, this suggests that people people expect---until they
+receive evidence to the contrary---that contexts will continue for a number of
+trials, and that old contexts will return in the future.
 
+While we treated these parameters as free when fitting our model, this was
+merely a simplifying assumption that we made to make the model easier to
+implement.  It's possible---and conceptually fairly straightforward in a
+Bayesian model like this---that they could be _inferred_ from the same data that
+the model uses to infer the contexts themelves.  It's thus possible that our
+interpretation of what these parameter values mean for people's expectations
+about the latent cluster structure actually reflect what people have _learned_
+from their experience in this particular experiment, where contexts _do_ tend to
+go on for a number of trials and recur multiple times (at least for the central
+cluster).  Future work is required to tease these possibilities apart.
+
+The possibility that people might be inferring the hyperparameters that govern
+how contexts change raises the question of what kind of changes people expect in
+the structure of contexts across environments.  That is, are people's models of
+contexts nested hierarchically, in a way that allows for variation not only in
+the specific features of each context (e.g., the location of dots in space) but
+also the properties of how contexts _change_ within a larger context/environment
+(e.g., the stickiness of contexts)?  This calls for future experiments that
+manipulate the generative model for the contexts themselves, within subjects and
+over time.
+
+More work is also needed to assess whether people actually are remembering and
+revisiting old contexts, as our model assumes.  It's possible that people are
+really just detecting _changes_ in context, and creating a fresh representation
+of a context every time they detect such a change.  One way to address this is
+by simulating such a changepoint model, which is the limiting case of our model
+when the concentration parameter $\alpha$ goes to infinity.  Another way is to
+collect more empirical data with changes in context explicitly designed to
+elicit anticipation for returning to old contexts.
+
+Finally, the strategy of our model---inferring discrete changes in context and
+remembering contexts---presupposes a particular underlying structure for how
+contexts actually tend to change in the world.  A number of different strategies
+could be optimal, given different environments, and it is an ecological question
+as to which strategies are likely to be useful in the kinds of environments
+people tend to find themselves in.  For instance, environments where latent
+variables don't change suddenly but rather drift slowly and continuously call
+for a very different family of strategies.  So while our model describes
+behavior well in _this_ particular experimental environment, that does not
+necessarily mean that it would also describe behavior well in an environment
+that does not follow the structural assumptions that the model makes.
+
+# Conclusion
+
+In a structured world, local context---either simultaneous or temporally
+extended---can provide a great deal of information about how to interpret or
+remember stimuli.  We have proposed a Bayesian model that infers latent context
+variables from unlabeled data, and uses that context to encode and retrieve
+information from memory.  This model processes data _online_, one observation at
+a time, and captures people's behavior in a multi-context spatial memory task.
