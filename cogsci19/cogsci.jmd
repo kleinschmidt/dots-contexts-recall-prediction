@@ -446,7 +446,7 @@ prediction_deviations = @_ predicted_good |>
 
 ```
 
-```{julia; label="pred-dev"; fig_cap="Predicted and actual deviations from last studied point for prediction task"}
+```{julia; label="pred-dev"; fig_cap="Model predicted ($\alpha=0.01, \rho=0.9$) and actual deviations from last studied point for prediction task.  Small points show deviations of predictions for each trial, and large points show average deviations for each lag (1, 5, or 10 trials)."}
 
 p = @df(prediction_deviations,
         scatter(:resp_dev, :mod_dev,
@@ -459,11 +459,12 @@ p = @df(prediction_deviations,
                 markeralpha=.3,
                 line=2,
                 aspect_ratio = :equal,
-                size=(800,400)))
+                size=(500,250)))
 
 @df(by(prediction_deviations, [:pred], :resp_dev=>mean, :mod_dev=>mean),
     scatter!(p,
-             :resp_dev_mean', :mod_dev_mean',
+             :resp_dev_mean, :mod_dev_mean,
+             group=:pred,
              color = (1:3)',    # use the colors for groups 1:3
              markersize=8,
              label=""))
