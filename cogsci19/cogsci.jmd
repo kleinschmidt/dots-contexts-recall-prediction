@@ -130,7 +130,69 @@ previous Bayesian models.
 
 ## Data
 
-@Robbins2014 - immediate spatial recall task (get methods from Pernille)
+```{julia; label="stimuli"; fig_cap="All studied locations for one subject (left), color-coded by their block (right), large dots show the average location for each block, and the gray lines show the sequence of blocks"; fig_width=6; fig_height=3}
+
+nblock = length(unique(recall1[:block]))
+
+pal = LCHab.(60,
+             60,
+             range(0, 320, length=nblock))
+
+p1 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
+          axis=false, grid=false, legend=false,
+          title="Studied locations")
+@df recall1 scatter!(p1, :theta, :rho, color=:black, markeralpha=0.5)
+
+p2 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
+          palette = pal, axis=false, grid=false,
+          title="Labeled by block")
+@_ recall1 |>
+    by(_, [:block], :theta=>mean, :rho=>mean) |>
+    @df(_, plot!(p2, :theta_mean, :rho_mean, color=GrayA(0.5, 0.2)))
+@_ recall1 |>
+    by(_, [:block], :theta=>mean, :rho=>mean) |>
+    @df(_, scatter!(p2, :theta_mean, :rho_mean, group=:block,
+                    c=(1:nblock)',
+                    markersize=8, markeralpha=0.2))
+@df recall1 scatter!(p2, :theta, :rho, group=:block, proj=^(:polar),
+                        palette = pal, legend=false)
+
+plot(p1, p2)
+
+```
+
+The data we model is described in detail in @Robbins2014, but we provide a brief
+summary of the procedure here.  In this experiment, participants were asked to
+record the location of a dot presented in a circle (see Figure -@fig:stimuli)
+and reconstruct that location from memory. Participants were given a cover story
+in order to keep the task engaging; they were told that the circle was a garden
+and the dots were moles. In order to save their garden, they had to “catch” the
+moles by clicking on the locations where they saw them.
+
+After an initial presentation of 20 dots at the center of the circle, dots were
+presented in blocks (3, 6, 9, or 12 presentations in a cluster), sampled from a
+multinomial normal distribution with a mean of a given radius and one of three
+variances (0.01, 0.04, and 0.06 in a unit circle).  There was no explicit signal
+to the subject when one block ended and the next began.  The mean angles and
+radii were informed by @Huttenlocher1991. There were 24 angle measures including
+the axes, and the measures consisted of the same relative angles in each
+quadrant. Four different distances measuring out from the center of the circle
+to the circumference were chosen
+
+Each dot was viewed for one second followed by a combined visual mask and
+distractor task designed to remove the dot from participants' visual field and
+introduce uncertainty in the memory process. This mask consisted of a grid of
+black and white squares; after this mask was removed, an “X” appeared on the
+screen and participants were asked to report the color of the square (black or
+white)previously in that location. Data from the distractor task was recorded
+but not analyzed. After the completion of the distractor task, participants were
+asked to **recall** the location of the dot from memory by clicking a spot in
+the circle. After every three trials, participants were asked to make a
+**prediction** about a future dot location. Prediction trials alternated between
+prediction for the next trial and prediction for five trials from now. Each
+block (defined as a cluster of trials at one mean) was followed by a prediction
+for the expected dot location 10 trials from the current trial. This resulted in
+a total of 280 trials: 80 prediction trials and 200 recall trials.
 
 ## Modeling
 
