@@ -47,4 +47,10 @@
    averaging.  That might require a lot of samples though which would get pretty
    expensive
 * Control models
-  No memory for previous clusters (just detect change)
+** No memory for previous clusters (just detect change)
+   This is like alpha -> infinity
+** CRP (no stickiness)
+   stickiness -> 0
+** Continuous change (moving window)
+   Idea is that you're just doing a moving window/context drift sort of model,
+   instead of looking for _changes_.
