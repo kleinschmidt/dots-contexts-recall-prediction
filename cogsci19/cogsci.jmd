@@ -29,7 +29,7 @@ abstract: |
   contexts, updating these in parallel as each new percept comes in.
 
   We apply this model to a recall task where subjects had to recall the position
-  of dots (Robbins, Hemmer, and Tang, CogSci2014).  Unbeknownst to subjects, each
+  of dots [@Robbins2014].  Unbeknownst to subjects, each
   dot appeared in one of a few pre-defined regions on the screen.  Our model
   captures subjects' ability to learn the inventory of contexts, the statistics of
   dot positions within each context, and the statistics of transitions between
@@ -680,13 +680,12 @@ center(x) = x .- mean(x)
 
 Our model also captures how the average distance from the last studied point
 increases as subjects are asked to predict the location of points +1, +5, and
-+10 trials into the future (@fig:pred-dev, large points).  Moreover, the model
++10 trials into the future (@Fig:pred-dev, large points).  Moreover, the model
 also captures variation _within_ these delay levels: after removing the effect
 of delay level by centering, the model's and subjects' prediction deviations are
 correlated at $\rho = `j ρ_dev`$ (95% bootstrapped CI: $[`j ρ_dev_low`, `j
 ρ_dev_high`]$, and significant at $p=0.014$ in a mixed model with random
 intercepts and slopes by subject).
-
 
 # Discussion
 
