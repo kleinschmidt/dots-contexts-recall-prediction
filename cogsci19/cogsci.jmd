@@ -57,7 +57,11 @@ using .Experiments
 include("../plots.jl")
 
 using JLD2
-@load "../data/dots2014.jld2"
+@load "../data/dots2014.jld2" recall pred
+# recall data from one subject
+one_subj = 4
+recall1 = @where(recall, :subjid1 .== one_subj)
+
 # load the prior _parameters_ to get around
 @load "../prior_empirical_params.jld2"
 prior_optimized = ConjugatePriors.NormalInverseWishart(μ, κ, Λ, ν)
@@ -145,7 +149,7 @@ p1 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
 
 p2 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
           palette = pal, axis=false, grid=false,
-          title="Labeled by block")
+          title="Colored by block")
 @_ recall1 |>
     by(_, [:block], :theta=>mean, :rho=>mean) |>
     @df(_, plot!(p2, :theta_mean, :rho_mean, color=GrayA(0.5, 0.2)))
@@ -326,9 +330,11 @@ parameter values.  The DP concentration parameter $\alpha$ was set to $0.01,
 0.1, 1,$ or $10$, and the stickiness parameter $\rho$ was set to $0.1, 0.5$, or
 $0.9$.  The memory noise standard deviation parameter $\sigma_x$ varied along
 $0.01, 0.1, 1$, (for a circle with a radius of 1), although only results from
-$\sigma_x = 0.1$ are presented here.  We ran 10 repetitions with each of the 36
-combinations of parameters, all of which used 100 particles for each subject's
-data.
+$\sigma_x = 0.1$ are presented here.  The prior for the cluster parameters was
+based on the distribution of true block means/covariances.  In principle, this
+could be inferred as well but we leave that enhancement for future work.  We ran
+10 repetitions with each of the 36 combinations of parameters, all of which used
+100 particles for each subject's data.
 
 The particle filter algorithm was implemented in Julia 1.1 [@Bezanson2017].
 The code, simulation results, and Weave.jl [@Pastell2017] source for this paper
@@ -337,9 +343,6 @@ is available from [osf.io/dqz73/](https://osf.io/dqz73/)
 # Results
 
 ```{julia; }
-
-# recall data from one subject
-recall1 = @where(recall, :subjid1 .== 7)
 
 Random.seed!(2019)
 
@@ -387,13 +390,14 @@ inferences about the underlying changes in context.  First, relative to the
 experimenter-defined blocks, the model occasionally undersegments, grouping
 adjacent blocks together into a single context.  Second, the model also
 sometimes infers that it has _returned_ to a previous context, instead of
-creating a new context when it infers that the block has changed.  As the
-Euclidean similarity matrix (@Fig:assign-mats, right) shows, this tends to
-happen when the points in two blocks are close together.  Third, because of the
-online nature of the model, it maintains relatively less uncertainty about
-the clustering of early trials.  Note though that @Fig:assign-mats shows the
-beliefs of the model at the _end_ of the experiment, which reflect the totality
-of the locations it has encountered.
+creating a new context when it infers that the block has changed.  This can be
+seen from the off-(block)-diagonal entries in the assignment similarity matrix
+(@Fig:assign-mats, left).  As the Euclidean similarity matrix (@Fig:assign-mats,
+right) shows, this tends to happen when the points in two blocks are close
+together.  Third, because of the online nature of the model, it maintains
+relatively less uncertainty about the clustering of early trials.  Note though
+that @Fig:assign-mats shows the beliefs of the model at the _end_ of the
+experiment, which reflect the totality of the locations it has encountered.
 
 ## Recall
 
@@ -411,7 +415,7 @@ recalled_good = @_ rec_params_good |>
         x_mod = mean(:x_mod), y_mod = mean(:y_mod)) 
 
 recalled1 = @_ recalled_good |>
-    @where(_, :subjid1 .== 7)
+    @where(_, :subjid1 .== one_subj)
 
 # baselines
 
@@ -427,7 +431,7 @@ known_recalled = by(recall, :subjid1) do d
                                                    hcat(:x_resp.-:x, :y_resp.-:y)'))
 end
 
-known_recalled1 = @where(known_recalled, :subjid1 .== 7)
+known_recalled1 = @where(known_recalled, :subjid1 .== one_subj)
 
 baseline!(df) = @_ df |>
     @transform(_, gt_rho_avg = rho.(:x,:y) .> mean(rho.(:x, :y))) |>
@@ -449,9 +453,11 @@ bs_center, bs_avgrho = @_ baseline_good |>
 
 ```
 
-```{julia; label="example-subj-recall"; fig_cap="Blue arrows show deviations from studied to recalled locations for one subject.  Black arrows show model's simulated recall deviations for same trials studied locations (\$\\alpha=0.01, \\rho=0.9, \\sigma_x=0.1\$)"}
-@df recalled1 arena(:x, :y, quiver=(:x_resp .- :x, :y_resp .- :y), seriestype=:quiver)
-@df recalled1 quiver!(:x, :y, quiver=(:x_mod .- :x, :y_mod .- :y), color=:black)
+```{julia; label="example-subj-recall"; fig_cap="Recall data from one subject (gray arrows, pointing from studied to recalled location) compared with model simulation (blue arrows; \$\\alpha=0.01, \\rho=0.9, \\sigma_x=0.1\$)"}
+@df recalled1 arena(:x, :y, quiver=(:x_mod .- :x, :y_mod .- :y),
+                    seriestype=:quiver, label="Model")
+@df recalled1 quiver!(:x, :y, quiver=(:x_resp .- :x, :y_resp .- :y),
+                      color=GrayA(0.0, 0.3), label="Behavior")
 ```
 
 Next, we assess how well the inferred contexts can predict recall.  Figure
@@ -459,7 +465,9 @@ Next, we assess how well the inferred contexts can predict recall.  Figure
 recalled locations (blue arrows) versus the model's predicted deviations (black
 arrows).  To quantify goodness of fit, we use the cosine similarity of the
 model's and subject's recall deviation (i.e., blue and black arrows in
-@Fig:example-subj-recall).  We chose this metric because it is less sensitive to
+@Fig:example-subj-recall), which ranges from 1 (deviations perfectly aligned) to
+$-1$ (deviations in opposite directions), with 0 corresponding to orthogonal
+deviations.  We chose this metric because it is less sensitive to
 large outlier responses than mean-squared error, and because approximations of
 the likelihood of a subject's response given the model is highly sensitive to
 free parameters and difficult to reliably estimate.  Moreover, the baseline
@@ -467,7 +475,7 @@ models we compare against also do not have straightforward likelihood models,
 but they _do_ make straightforward predictions about the directions of recall
 deviations.
 
-```{julia; label="cosinesim-by-param"; fig_cap="Cosine-similarity of model predicted and actual recall deviations across parameter values.  Gray lines show baselines: always deviate toward center, average radius, and center of true clusters"}
+```{julia; label="cosinesim-by-param"; fig_cap="Mean cosine-similarity of model predicted and actual recall deviations across parameter values.  Gray lines show baselines: always deviate toward center, average radius, and center of true clusters"}
 
 @df(@where(recalled_summaries, :Sσ .≈ 0.01),
     plot(:α, :cos, ribbon = (:cos .- :cos_low, :cos_high .- :cos), group=:ρ, xscale=:log10, 
@@ -493,14 +501,19 @@ plot_baseline!(bs_avgrho,
 ```
 
 Figure -@fig:cosinesim-by-param shows the cosine similarity with of all
-subjects' responses with the multi-context Bayesian model.  We compare the
-model's performance against three baselines.  First, we compare it against a
-"known clusters" model, which uses the true (experimenter defined) clusters with
-the same Bayesian cue combination model of encoding and recall.  Second, we
-compare it to two baselines based on previous literature on similar memory
-tasks [@Huttenlocher1991]: one that always biases recall towards the center (the
-average location of all trials), and one that baises recall towards the mean
-radius.
+subjects' responses with the multi-context Bayesian model.  At all parameter
+settings, the model performs better than chance, predicting subjects' recall
+deviation directions at a cosine similarity of around $0.1$ (relative to a
+chance level of 0).  The model performs best for high $\rho$ stickiness and low
+$\alpha$ concentration.
+
+We also compare the model's performance against three baselines.  First, we
+compare it against a "known clusters" model, which uses the true (experimenter
+defined) clusters with the same Bayesian cue combination model of encoding and
+recall.  Second, we compare it to two baselines based on previous literature on
+similar memory tasks [@Huttenlocher1991]: one that always biases recall towards
+the center (the average location of all trials), and one that baises recall
+towards the mean radius.
 
 First, at the whole range of parameters explored, the multi-context model
 performs better than the center- or mean-radius-biased baselines.  Second,
@@ -524,7 +537,7 @@ predicted_good = @_ predicted_all |>
             on=[:subjid1, :block, :respnr]) |>
     sort!(_, (:subjid1, :respnr, :pred))
 
-predicted1 = @where(predicted_good, :subjid1 .== 7)
+predicted1 = @where(predicted_good, :subjid1 .== one_subj)
 
 prediction_deviations = @_ predicted_good |>
     @transform(_, resp_dev = rho.(:x.-:x_resp, :y.-:y_resp), 
@@ -650,4 +663,6 @@ correlated at $\rho = `j ρ_dev`$ (95% bootstrapped CI: $[`j ρ_dev_low`, `j
 intercepts and slopes by subject).
 
 
-# Conclusion
+# Discussion
+
+
