@@ -361,7 +361,7 @@ bs_center, bs_avgrho = @_ baseline_good |>
 
 ```
 
-```{julia; label="example-subj-recall"; fig_cap="One subject's recall data plus model predictions"}
+```{julia; label="example-subj-recall"; fig_cap="Blue arrows show deviations from studied to recalled locations for one subject.  Black arrows show model's simulated recall deviations for same trials studied locations (\$\\alpha=0.01, \\rho=0.9, \\sigma_x=0.1\$)"}
 @df recalled1 arena(:x, :y, quiver=(:x_resp .- :x, :y_resp .- :y), seriestype=:quiver)
 @df recalled1 quiver!(:x, :y, quiver=(:x_mod .- :x, :y_mod .- :y), color=:black)
 ```
@@ -446,7 +446,7 @@ prediction_deviations = @_ predicted_good |>
 
 ```
 
-```{julia; label="pred-dev"; fig_cap="Model predicted ($\alpha=0.01, \rho=0.9$) and actual deviations from last studied point for prediction task.  Small points show deviations of predictions for each trial, and large points show average deviations for each lag (1, 5, or 10 trials)."}
+```{julia; label="pred-dev"; fig_cap="Model predicted (\$\\alpha=0.01, \\rho=0.9\$) and actual deviations from last studied point for prediction task.  Small points show deviations of predictions for each trial, and large points show average deviations for each lag (1, 5, or 10 trials)."}
 
 p = @df(prediction_deviations,
         scatter(:resp_dev, :mod_dev,
