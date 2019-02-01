@@ -473,8 +473,33 @@ plot!(p, 0:.1:maximum(prediction_deviations[:mod_dev]), x->x, color=GrayA(0.2, 0
 
 ```
 
+```{julia; label="pred-cor"}
+
+@_ prediction_deviations |>
+    by(_, [:pred], (:resp_dev, :mod_dev)=> rm->boot_ci(hcat(rm...), x->cor(x)[2]))
+
+center(x) = x .- mean(x)
+
+ρ_dev, ρ_dev_low, ρ_dev_high =
+    @_ prediction_deviations |>
+    by(_, [:pred], :resp_dev=>center, :mod_dev=>center) |>
+    @select(_, :resp_dev_center, :mod_dev_center) |>
+    Matrix |>
+    boot_ci(_, x->cor(x)[2]) |>
+    first |>
+    round.(_, digits=2)
+
+```
+
 Our model also captures subjects' predictions about the location of upcoming
-points at different delays.
+points at different delays.  The average distance from the last studied point
+increases as subjects are asked to predict the location of points 1, 5, and 10
+trials into the future, a pattern which the model's predictions replicates
+quantitatively as well as qualitatively (@fig:pred-dev, large points).
+Moreover, the model also captures variation _within_ these delay levels: after
+removing the effect of delay level by centering, the model's and subjects'
+prediction deviations are correlated at $\rho = `j ρ_dev`$ (95% bootstrapped CI:
+$[`j ρ_dev_low`, `j ρ_dev_high`]$).
 
 
 # Conclusion
