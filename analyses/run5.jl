@@ -1,7 +1,7 @@
 # copy of run 3, using fearnhead filter 
 
 using Distributed, Dates
-batch = :run5_DEBUG
+batch = :run5
 
 # setup:
 @everywhere begin
@@ -76,7 +76,7 @@ expts = experiments((recall_bysub, pred_bysub),
                     iter = [1:20;])
 
 
-results = pmap(expts[1:3]) do ex run(recall_predict, ex) end
+results = pmap(expts) do ex run(recall_predict, ex) end
 # get rid of all the metadata from the results
 results = getproperty.(results, :result)
 @save "../results/$batch-$(DateTime(now())).jld2" expts results

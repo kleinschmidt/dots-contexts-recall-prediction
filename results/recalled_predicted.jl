@@ -30,18 +30,28 @@ recalled(r) =
                      vcat(first.(r.result)...)),
                 r.experiment.params)
 
+recalled(e, r) =
+    add_params!(hcat(reduce(vcat, e.data[1]),
+                     reduce(vcat, first.(r))),
+                e.params)
+
 predicted(r) =
     add_params!(hcat(vcat(r.experiment.data[2]...),
                      vcat(last.(r.result)...)[[:xys_mod]]),
                 r.experiment.params)
 
+predicted(e, r) =
+    add_params!(hcat(reduce(vcat, e.data[2]),
+                     reduce(vcat, last.(r))[[:xys_mod]]),
+                r.experiment.params)
+
 function save_recalled_predicted(f::AbstractString)
-    results = jldopen(f, "r") do file
-        file["results"]
+    expts, results = jldopen(f, "r") do file
+        file["expts"], file["results"]
     end
     basename, ext = splitext(f)
     jldopen(basename * "-recalled-predicted" * ext, "w") do file
-        recalled_all = mapreduce(recalled, vcat, results)
+        recalled_all = reduce(vcat, map(recalled, expts, results))
         predicted_all = @_ mapreduce(predicted, vcat, results) |>
             @by(_, [:subjid1, :block, :respnr, :pred, :theta_resp, :rho_resp, :α, :ρ],
                 xys_mod = Ref(reduce(vcat, :xys_mod))) |>
