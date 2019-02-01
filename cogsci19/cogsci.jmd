@@ -103,9 +103,9 @@ larger-scale regularities in the environment mean that context can function as a
 source of additional _information_, reducing the amount of information that must
 be stored about particular instances.  Evidence abounds that people draw on the
 _context_ an item occurred in as an additional source of information [e.g.,
-@Orhan2013; @Qian2014; @Huttenlocher1991].  In this view, so-called "false
-recall" is really a reflection of the mis-match between the _experimenter's_
-defined context and the _subject's_ inferred context.
+@DuBrow2017; @Huttenlocher1991; @Orhan2013; @Schulz2018; @Qian2014].  In this
+view, so-called "false recall" is really a reflection of the mis-match between
+the _experimenter's_ defined context and the _subject's_ inferred context.
 
 However, this begs the question of what _is_ a context, and how do people know?
 For instance, @Huttenlocher1991 found that immediate spatial recall of a
