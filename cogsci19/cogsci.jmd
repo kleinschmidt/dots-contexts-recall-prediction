@@ -162,7 +162,7 @@ plot(p1, p2)
 ```
 
 The data we model is described in detail in @Robbins2014, but we provide a brief
-summary of the procedure here.  In this experiment, participants were asked to
+summary of the procedure here.  In this experiment, 8 participants were asked to
 record the location of a dot presented in a circle (see Figure -@fig:stimuli)
 and reconstruct that location from memory. Participants were given a cover story
 in order to keep the task engaging; they were told that the circle was a garden
@@ -216,7 +216,7 @@ p(z_i=j | z_{1:i-1}) $$
 The sequential prior $p(z_i=j | z_{1:i-1})$ is a "Hibachi Grill Process"
 [@Qian2014], which is like the standard Chinese Restaurant Process (CRP) with an
 added (constant) probability assigned to the previous state.  This corresponds
-to the following generative model: with probability $0 < \rho < 1$ the last
+to the following generative model: with probability $0 < \rho < 1$ the previous
 state is picked, $j=z_{i-1}$, and with probability $1-\rho$ a component is
 chosen from a Chinese Restaurant Process with concentration $\alpha$, which
 assigns probability to each state proportional to the number of observations
@@ -319,11 +319,20 @@ point from the posterior predictive distribution of the resulting cluster.  In
 the case that the predicted cluster is a new cluster, we sample from the prior
 predictive.
 
-## Procedure
+## Modeling procedure
 
-To evaluate this model, we simulated the data from @Robbins2014. 
+To evaluate this model, we simulated the data from @Robbins2014 with a range of
+parameter values.  The DP concentration parameter $\alpha$ was set to $0.01,
+0.1, 1,$ or $10$, and the stickiness parameter $\rho$ was set to $0.1, 0.5$, or
+$0.9$.  The memory noise standard deviation parameter $\sigma_x$ varied along
+$0.01, 0.1, 1$, (for a circle with a radius of 1), although only results from
+$\sigma_x = 0.1$ are presented here.  We ran 10 repetitions with each of the 36
+combinations of parameters, all of which used 100 particles for each subject's
+data.
 
-The particle filter algorithm was implemented in Julia 1.0 [@Bezanson2017].
+The particle filter algorithm was implemented in Julia 1.1 [@Bezanson2017].
+The code, simulation results, and Weave.jl [@Pastell2017] source for this paper
+is available from [osf.io/dqz73/](https://osf.io/dqz73/)
 
 # Results
 
@@ -331,6 +340,8 @@ The particle filter algorithm was implemented in Julia 1.0 [@Bezanson2017].
 
 # recall data from one subject
 recall1 = @where(recall, :subjid1 .== 7)
+
+Random.seed!(2019)
 
 rf = RecallFilter(FearnheadParticles(100,
                                      prior_optimized,
@@ -371,7 +382,18 @@ according to their weight.
 @Fig:assign-mats shows the assignment similarty matrix for one subject, based on
 a 100-particle filter with $\alpha=0.01, \rho=0.9$ (left), the true,
 experimenter-defined block structure (middle), and pairwise Euclidean distance
-(right).
+(right).  This example shows a number of important features of the model's
+inferences about the underlying changes in context.  First, relative to the
+experimenter-defined blocks, the model occasionally undersegments, grouping
+adjacent blocks together into a single context.  Second, the model also
+sometimes infers that it has _returned_ to a previous context, instead of
+creating a new context when it infers that the block has changed.  As the
+Euclidean similarity matrix (@Fig:assign-mats, right) shows, this tends to
+happen when the points in two blocks are close together.  Third, because of the
+online nature of the model, it maintains relatively less uncertainty about
+the clustering of early trials.  Note though that @Fig:assign-mats shows the
+beliefs of the model at the _end_ of the experiment, which reflect the totality
+of the locations it has encountered.
 
 ## Recall
 
@@ -561,7 +583,17 @@ plot(p1, p2, p3, layout=(3,1), size=(600, 900))
 
 Subjects also, every three recall trials, predicted the location where points
 would appear in 1, 5, or 10 trials in the future.  This is a more explicit probe
-of what subjects know about the cluster structure than the recall task.  
+of what subjects know about the cluster structure than the recall task.  Figure
+-@fig:pred-examples shows six examples of how the model's prediction about
+upcoming locations capture subjects' behavior.  For +1 trial predictions, the
+model's distribution of predicted locations primarily reflects its beliefs about
+the _current_ cluster (as reflected by the higher density of predictions near
+the white studied point), because of the "sticky" Hibachi Grill Process prior on
+states.  At +10 trials, the model is much more likely to predict the center
+cluster, which recurs frequently throughout the experiment (see also Figure
+-@fig:assign-mats).  Likewise, subjects also have picked up on this pattern and
+are more likely to predict locations close to the center on +10 prediction
+trials.
 
 ```{julia; label="pred-dev"; fig_cap="Model predicted (\$\\alpha=0.01, \\rho=0.9\$) and actual deviations from last studied point for prediction task.  Small points show deviations of predictions for each trial, and large points show average deviations for each lag (1, 5, or 10 trials)."}
 
@@ -608,15 +640,14 @@ center(x) = x .- mean(x)
 
 ```
 
-Our model also captures subjects' predictions about the location of upcoming
-points at different delays.  The average distance from the last studied point
-increases as subjects are asked to predict the location of points 1, 5, and 10
-trials into the future, a pattern which the model's predictions replicates
-quantitatively as well as qualitatively (@fig:pred-dev, large points).
-Moreover, the model also captures variation _within_ these delay levels: after
-removing the effect of delay level by centering, the model's and subjects'
-prediction deviations are correlated at $\rho = `j ρ_dev`$ (95% bootstrapped CI:
-$[`j ρ_dev_low`, `j ρ_dev_high`]$).
+Our model also captures how the average distance from the last studied point
+increases as subjects are asked to predict the location of points +1, +5, and
++10 trials into the future (@fig:pred-dev, large points).  Moreover, the model
+also captures variation _within_ these delay levels: after removing the effect
+of delay level by centering, the model's and subjects' prediction deviations are
+correlated at $\rho = `j ρ_dev`$ (95% bootstrapped CI: $[`j ρ_dev_low`, `j
+ρ_dev_high`]$, and significant at $p=0.014$ in a mixed model with random
+intercepts and slopes by subject).
 
 
 # Conclusion
