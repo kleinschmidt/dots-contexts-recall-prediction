@@ -90,39 +90,43 @@ end
 ```
 
 
-# Notes
+# Introduction
 
-When remembering a particular item people draw on the _context_ that item
-occurred in as an additional source of information [e.g., @Orhan2013; @Qian2014;
-@Huttenlocher1991].  For instance, @Huttenlocher1991 found that immediate
-spatial recall of a location in a circular area is biased towards the average
-radius of all locations in the experiment.  They proposed that memory for an
-individual item's location is encoded at two levels: the item itself, and the
-_category_ it was assigned to.  Building on this, @Robbins2014 found that when
-people are exposed to an environment where there are multiple clusters
+Every cognitive function---perceptual inference, learning, memory, decision
+making, etc.---takes place in _context_, and understanding these cognitive
+functions requires understanding the role that the context plays.  When
+cognitive functions are considered in isolation, context can appear to be a
+source of errors, distraction, or added uncertainty.  For example, @Roediger1995
+induced "false recall" by having subjects study lists of near associates of a
+word but not the critical word itself.  However, when considered ecologically,
+larger-scale regularities in the environment mean that context can function as a
+source of additional _information_, reducing the amount of information that must
+be stored about particular instances.  Evidence abounds that people draw on the
+_context_ an item occurred in as an additional source of information [e.g.,
+@Orhan2013; @Qian2014; @Huttenlocher1991].  In this view, so-called "false
+recall" is really a reflection of the mis-match between the _experimenter's_
+defined context and the _subject's_ inferred context.
 
-((( Bayesian models of memory in other domains )))
+However, this begs the question of what _is_ a context, and how do people know?
+For instance, @Huttenlocher1991 found that immediate spatial recall of a
+location in a circular area is biased towards the average radius of all
+locations in the experiment.  They proposed that memory for an individual item's
+location is encoded at two levels: the item itself, and the _category_ it was
+assigned to.  However, their proposed model does not address what constitutes a
+category or how subjects decide, and instead simply defines the category based
+on the long-run statistics of locations encountered in their experiment.
+However, @Robbins2014 discovered that in a similar task with multiple (implicit)
+contexts, subjects recall draws on _context_-level statistics, rather than the
+long-run (experiment-level) statistics.
 
-Here, we evaluate whether Bayesian non-parametric clustering can explain peoples
-behavior when the context occurs over time.
-
-
-
-Can model
-this as a kind of Bayesian cue combination: combine uncertain memory trace
-(likelihood) contextual information (prior) to infer the distribution of
-properties of the recalled item (posterior).
-
-Begs the question what _is_ context?  It's not handed down by god.  Can think of
-this as another level of inference: infer jointly which context a particular
-item belongs to, and the likely properties that item had.
-
-We treat multi-context memory as a non-parametric clustering problem: during
-encoding, people must infer the _context_ (cluster) that that item belongs to,
-which could any of the contexts they have encountered thus far, or a new
-context.
-
-
+Here, we propose a Bayesian model of learning and memory in multi-context
+environments, and apply this model to the data from @Robbins2014 human spatial memory
+experiment.  The model treats the problem of identifying latent contexts as a
+sequential non-parametric clustering problem, where agents must update their
+beliefs about which context they are in and the properties of that context
+_online_, with one data point at a time.  This model thus captures psychological
+constraints on the discovery of latent contexts which is not captured by
+previous Bayesian models.
 
 ## Data
 
@@ -131,11 +135,11 @@ context.
 ## Modeling
 
 Our model has three components.  First, we model how people infer the assignment
-of stimuli to contexts as nonparametric Bayesian clustering, approximated with a
-particle filter.  Second, we model encoding and recall of locations as Bayesian
-cue combination with a prior from the context.  Third, we model subjects'
-predictions about future locations via the posterior predictive distribution of
-the context model.
+of stimuli to contexts as nonparametric Bayesian clustering, approximated
+sequentially with a particle filter.  Second, we model encoding and recall of
+locations as Bayesian cue combination with a prior from the context [much like
+@Huttenlocher1991].  Third, we model subjects' predictions about future
+locations via the posterior predictive distribution of the context model.
 
 ### Context model
 
