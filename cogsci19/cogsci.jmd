@@ -450,6 +450,57 @@ prediction_deviations = @_ predicted_good |>
 
 ```
 
+```{julia; label="pred-examples"; fig_cap="Subject's (red points) and model's (gray regions) predictions about upcoming locations at various points throughout the experiment and various prediction horizons.  The white points show the last recalled location"}
+
+white_to_black = cgrad([Gray(.9), Gray(0)])
+
+function plot_prediction_task(xys_mod::Matrix, 
+                              x::Float64, y::Float64, 
+                              x_resp::Float64, y_resp::Float64)
+    p = arena(xys_mod[:,1], xys_mod[:,2], seriestype=:histogram2d, color=white_to_black, 
+              bins=range(-1.2, stop=1.2, length=50), lims=(-1.2, 1.2))
+    scatter!(p, [x], [y], color=:white, markerstrokecolor=Gray(.5))
+    scatter!(p, [x_resp], [y_resp], color=:red)
+    return p
+end
+
+function plot_prediction_task(d::AbstractDataFrame, args...; title=true, kwargs...)
+    plots = let plots = [], title=title
+        @byrow! d begin
+            push!(plots, plot_prediction_task(:xys_mod, :x, :y, :x_resp, :y_resp))
+            title!(plots[end], title ? "Trial $(:respnr) (+$(:pred))" : "")
+        end
+        plots
+    end
+    plot(plots..., args...; kwargs...)
+end
+
+
+
+# 23 (+1 and +10...back to center)
+# trial 80 (+5 vs +10)
+# 140 (+1 vs +10)
+
+p1 = @_ predicted1 |>
+    @where(_, :respnr .== 23) |>
+    plot_prediction_task(_, title=true)
+
+p2 = @_ predicted1 |>
+    @where(_, :respnr .== 80) |>
+    plot_prediction_task(_, title=true)
+
+p3 = @_ predicted1 |>
+    @where(_, :respnr .== 140) |>
+    plot_prediction_task(_, title=true)
+
+plot(p1, p2, p3, layout=(3,1), size=(600, 900))
+
+```
+
+Subjects also, every three recall trials, predicted the location where points
+would appear in 1, 5, or 10 trials in the future.  This is a more explicit probe
+of what subjects know about the cluster structure than the recall task.  
+
 ```{julia; label="pred-dev"; fig_cap="Model predicted (\$\\alpha=0.01, \\rho=0.9\$) and actual deviations from last studied point for prediction task.  Small points show deviations of predictions for each trial, and large points show average deviations for each lag (1, 5, or 10 trials)."}
 
 p = @df(prediction_deviations,
