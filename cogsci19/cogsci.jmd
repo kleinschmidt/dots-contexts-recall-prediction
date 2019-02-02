@@ -159,7 +159,7 @@ previous Bayesian models.
 
 ## Data
 
-```{julia; label="stimuli"; fig_cap="All studied locations for one subject (left), color-coded by their block (right), large dots show the average location for each block, and the gray lines show the sequence of blocks"; fig_width=6; fig_height=3}
+```{julia; label="stimuli"; fig_cap="All locations that subject 4 studied (left), color-coded by their block (right), large dots show the average location for each block, and the gray lines show the sequence of blocks"; fig_width=6; fig_height=3}
 
 nblock = length(unique(recall1[:block]))
 
@@ -249,8 +249,10 @@ to the following generative model: with probability $0 < \rho < 1$ the previous
 state is picked, $j=z_{i-1}$, and with probability $1-\rho$ a component is
 chosen from a Chinese Restaurant Process with concentration $\alpha$, which
 assigns probability to each state proportional to the number of observations
-assigned to it already[^counts], and creates a new state with probability
-proportional to $\alpha > 0$.
+assigned to it already,[^counts] and creates a new state with probability
+proportional to $\alpha > 0$.  We refer to the $\rho$ parameter as the
+"stickiness" because it controls how likely, a priori, the model is to stick to
+the same state.
 
 [^counts]: One important difference from a standard CRP is that only non-sticky
     transitions count for the purposes of sampling new states from the CRP.
@@ -282,7 +284,7 @@ $$
 \frac{\sum_j p((z_{1:i-1}^{(k)},j) | x_{1:i})}
      {p(z_{1:i-1}^{(k)} | x_{1:i-1})}
 $$
-to ensure that each particle's weight reflects it's ability to _predict_ the
+to ensure that each particle's weight reflects its ability to _predict_ the
 point $x_i$, rather than just _explain_ it.  When too much of the total weight
 for the population (constrained to sum to 1) is captured by a small number of
 particles (measured by the ratio of the variance of the weights to their mean
@@ -292,12 +294,12 @@ the weights are set to be uniform.
 This is for two reasons.  First, because we wish to query the
 model's beliefs about the current context at every point throughout the
 experiment, an online approximation is much more computationally efficient.  A
-batch algorithm like Gibbs sampling or Hamiltonian Monte Carlo requries one full
+batch algorithm like Gibbs sampling or Hamiltonian Monte Carlo requires one full
 sweep through the data for each sample, which must be done independently for
 each data point, so drawing $K$ samples for each of $N$ data points is
-$O(KN^2)$.  A particle filter propogates uncertainty with a fixed population of
+$O(KN^2)$.  A particle filter propagates uncertainty with a fixed population of
 $K$ particles, updating each particle in parallel as each data point comes in,
-meaning the complexity is only $O(KN)$.  This means it's possible to effectively
+meaning the complexity is only $O(KN)$.  This means it is possible to effectively
 model longer experiments.
 
 Second, an online learning algorithm better approximates _psychological_
@@ -351,8 +353,8 @@ predictive.
 ## Modeling procedure
 
 To evaluate this model, we simulated the data from @Robbins2014 with a range of
-parameter values.  The DP concentration parameter $\alpha$ was set to $0.01,
-0.1, 1,$ or $10$, and the stickiness parameter $\rho$ was set to $0.1, 0.5$, or
+parameter values.  The concentration parameter $\alpha$ was set to $0.01, 0.1,
+1,$ or $10$, and the stickiness parameter $\rho$ was set to $0.1, 0.5$, or
 $0.9$.  The memory noise standard deviation parameter $\sigma_x$ varied along
 $0.01, 0.1, 1$, (for a circle with a radius of 1), although only results from
 $\sigma_x = 0.1$ are presented here.  The prior for the cluster parameters was
@@ -407,8 +409,8 @@ probability that trials $i$ and $j$ are assigned to the same cluster.  This
 probability is calculated by averaging across all particles in the population
 according to their weight.
 
-@Fig:assign-mats shows the assignment similarty matrix for one subject, based on
-a 100-particle filter with $\alpha=0.01, \rho=0.9$ (left), the true,
+Figure -@Fig:assign-mats shows the assignment similarity matrix for one subject,
+based on a 100-particle filter with $\alpha=0.01, \rho=0.9$ (left), the true,
 experimenter-defined block structure (middle), and pairwise Euclidean distance
 (right).  This example shows a number of important features of the model's
 inferences about the underlying changes in context.  First, relative to the
@@ -417,12 +419,13 @@ adjacent blocks together into a single context.  Second, the model also
 sometimes infers that it has _returned_ to a previous context, instead of
 creating a new context when it infers that the block has changed.  This can be
 seen from the off-(block)-diagonal entries in the assignment similarity matrix
-(@Fig:assign-mats, left).  As the Euclidean similarity matrix (@Fig:assign-mats,
-right) shows, this tends to happen when the points in two blocks are close
-together.  Third, because of the online nature of the model, it maintains
-relatively less uncertainty about the clustering of early trials.  Note though
-that @Fig:assign-mats shows the beliefs of the model at the _end_ of the
-experiment, which reflect the totality of the locations it has encountered.
+(Figure -@Fig:assign-mats, left).  As the Euclidean similarity matrix (Figure
+-@Fig:assign-mats, right) shows, this tends to happen when the points in two
+blocks are close together.  Third, because of the online nature of the model, it
+maintains relatively less uncertainty about the clustering of early trials.
+Note though that Figure -@Fig:assign-mats shows the beliefs of the model at the
+_end_ of the experiment, which reflect the totality of the locations it has
+encountered.
 
 ## Recall
 
@@ -478,7 +481,7 @@ bs_center, bs_avgrho = @_ baseline_good |>
 
 ```
 
-```{julia; label="example-subj-recall"; fig_cap="Recall data from one subject (gray arrows, pointing from studied to recalled location) compared with model simulation (blue arrows; \$\\alpha=0.01, \\rho=0.9, \\sigma_x=0.1\$)"}
+```{julia; label="example-subj-recall"; fig_cap="Subject 4's recalled locations (gray arrows, pointing from studied to recalled location) compared with model simulation (blue arrows; \$\\alpha=0.01, \\rho=0.9, \\sigma_x=0.1\$)"}
 @df recalled1 arena(:x, :y, quiver=(:x_mod .- :x, :y_mod .- :y),
                     seriestype=:quiver, label="Model")
 @df recalled1 quiver!(:x, :y, quiver=(:x_resp .- :x, :y_resp .- :y),
@@ -487,10 +490,10 @@ bs_center, bs_avgrho = @_ baseline_good |>
 
 Next, we assess how well the inferred contexts can predict recall.  Figure
 -@fig:example-subj-recall shows one subject's actual deviations from studied to
-recalled locations (blue arrows) versus the model's predicted deviations (black
+recalled locations (gray arrows) versus the model's predicted deviations (blue
 arrows).  To quantify goodness of fit, we use the cosine similarity of the
 model's and subject's recall deviation (i.e., blue and black arrows in
-@Fig:example-subj-recall), which ranges from 1 (deviations perfectly aligned) to
+Figure -@Fig:example-subj-recall), which ranges from 1 (deviations perfectly aligned) to
 $-1$ (deviations in opposite directions), with 0 corresponding to orthogonal
 deviations.  We chose this metric because it is less sensitive to
 large outlier responses than mean-squared error, and because approximations of
@@ -505,9 +508,9 @@ deviations.
 @df(@where(recalled_summaries, :Sσ .≈ 0.01),
     plot(:α, :cos, ribbon = (:cos .- :cos_low, :cos_high .- :cos), group=:ρ, xscale=:log10, 
          xlims=(10^-2.5, 10^1.5), ylims=(0, 0.12), seriestype=:line,
-         xlabel="Eagerness to create new clusters (DP concentration \\alpha)",
+         xlabel="Eagerness to create new clusters (concentration   \\alpha)",
          ylabel=("Cosine sim. with behavior"),
-         legend=:bottomright, legend_title="Stickiness \\rho", line=2))
+         legend=:bottomright, legend_title="Stickiness   \\rho", line=2))
 
 baseline_x = [10^-2.1, 10^1.1]
 
@@ -537,7 +540,7 @@ compare it against a "known clusters" model, which uses the true (experimenter
 defined) clusters with the same Bayesian cue combination model of encoding and
 recall.  Second, we compare it to two baselines based on previous literature on
 similar memory tasks [@Huttenlocher1991]: one that always biases recall towards
-the center (the average location of all trials), and one that baises recall
+the center (the average location of all trials), and one that biases recall
 towards the mean radius.
 
 First, at the whole range of parameters explored, the multi-context model
@@ -562,7 +565,7 @@ predicted_good = @_ predicted_all |>
             on=[:subjid1, :block, :respnr]) |>
     sort!(_, (:subjid1, :respnr, :pred))
 
-predicted1 = @where(predicted_good, :subjid1 .== one_subj)
+predicted1 = @where(predicted_good, :subjid1 .== 4)
 
 prediction_deviations = @_ predicted_good |>
     @transform(_, resp_dev = rho.(:x.-:x_resp, :y.-:y_resp), 
@@ -572,7 +575,7 @@ prediction_deviations = @_ predicted_good |>
 
 ```
 
-```{julia; label="pred-examples"; fig_cap="Subject's (red points) and model's (gray regions) predictions about upcoming locations at various points throughout the experiment and various prediction horizons.  The white points show the last recalled location"}
+```{julia; label="pred-examples"; fig_cap="Subject 7's (red points) and model's (gray regions) predictions about upcoming locations at various points throughout the experiment and various prediction horizons.  The white points show the last recalled location"}
 
 white_to_black = cgrad([Gray(.9), Gray(0)])
 
@@ -596,8 +599,6 @@ function plot_prediction_task(d::AbstractDataFrame, args...; title=true, kwargs.
     end
     plot(plots..., args...; kwargs...)
 end
-
-
 
 # 23 (+1 and +10...back to center)
 # trial 80 (+5 vs +10)
@@ -680,12 +681,12 @@ center(x) = x .- mean(x)
 
 Our model also captures how the average distance from the last studied point
 increases as subjects are asked to predict the location of points +1, +5, and
-+10 trials into the future (@Fig:pred-dev, large points).  Moreover, the model
-also captures variation _within_ these delay levels: after removing the effect
-of delay level by centering, the model's and subjects' prediction deviations are
-correlated at $\rho = `j ρ_dev`$ (95% bootstrapped CI: $[`j ρ_dev_low`, `j
-ρ_dev_high`]$, and significant at $p=0.014$ in a mixed model with random
-intercepts and slopes by subject).
++10 trials into the future (Figure -@Fig:pred-dev, large points).  Moreover, the
+model also captures variation _within_ these delay levels: after removing the
+effect of delay level by centering, the model's and subjects' prediction
+deviations are correlated at $\rho = `j ρ_dev`$ (95% bootstrapped CI: $[`j
+ρ_dev_low`, `j ρ_dev_high`]$, and significant at $p=0.014$ in a mixed model with
+random intercepts and slopes by subject).
 
 # Discussion
 
@@ -696,15 +697,15 @@ observation at a time, with Sequential Monte Carlo.  Exploring a range of
 parameters for the state transition prior, we found that subjects recall
 behavior is best captured with high "stickiness" (prior probability of remaining
 in the same cluster) and low concentration (prior probability of creating a new
-cluster).  Together, this suggests that people people expect---until they
+cluster).  Together, this suggests that people expect---until they
 receive evidence to the contrary---that contexts will continue for a number of
 trials, and that old contexts will return in the future.
 
 While we treated these parameters as free when fitting our model, this was
 merely a simplifying assumption that we made to make the model easier to
-implement.  It's possible---and conceptually fairly straightforward in a
+implement.  It is possible---and conceptually fairly straightforward in a
 Bayesian model like this---that they could be _inferred_ from the same data that
-the model uses to infer the contexts themelves.  It's thus possible that our
+the model uses to infer the contexts themselves.  It is thus possible that our
 interpretation of what these parameter values mean for people's expectations
 about the latent cluster structure actually reflect what people have _learned_
 from their experience in this particular experiment, where contexts _do_ tend to
@@ -722,10 +723,10 @@ manipulate the generative model for the contexts themselves, within subjects and
 over time.
 
 More work is also needed to assess whether people actually are remembering and
-revisiting old contexts, as our model assumes.  It's possible that people are
+revisiting old contexts, as our model assumes.  It is possible that people are
 really just detecting _changes_ in context, and creating a fresh representation
 of a context every time they detect such a change.  One way to address this is
-by simulating such a changepoint model, which is the limiting case of our model
+by simulating such a change-point model, which is the limiting case of our model
 when the concentration parameter $\alpha$ goes to infinity.  Another way is to
 collect more empirical data with changes in context explicitly designed to
 elicit anticipation for returning to old contexts.
@@ -750,3 +751,8 @@ remember stimuli.  We have proposed a Bayesian model that infers latent context
 variables from unlabeled data, and uses that context to encode and retrieve
 information from memory.  This model processes data _online_, one observation at
 a time, and captures people's behavior in a multi-context spatial memory task.
+
+# Acknowledgments
+
+This work was supported by a National Science Foundation Grant 1453276 awarded
+to Pernille Hemmer.
