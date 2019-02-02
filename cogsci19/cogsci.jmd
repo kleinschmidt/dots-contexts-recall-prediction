@@ -406,12 +406,12 @@ euc_dist = @_ recall1 |>
     Distances.pairwise(Euclidean(), _')
 
 plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
-          title="Inferred clusters"),
+          title="Inferred clusters", guide="Trial"),
      plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),
                          recall1[:block],
                          block_pallete),
           title="Euclidean distance"),
-     axis=false, aspect_ratio=:equal, layout=(1,2), size=(800,400))
+     aspect_ratio=:equal, layout=(1,2), size=(800,400))
 
 ```
 
