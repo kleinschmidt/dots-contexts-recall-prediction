@@ -97,7 +97,7 @@ $endif$
   $if(author.affiliation)$\\    % handle author-specific affiliations
   $for(author.affiliation)$$author.affiliation$$sep$\\% $endfor$
   $endif$ %                     % end author affiliations
-  $sep$\AND %
+  $sep$\\ %
   $endfor$ %                    % end for(author)
   $if(affiliation)$\\           % handle standalone affiliations
   $for(affiliation)$$affiliation$$sep$\\  %
