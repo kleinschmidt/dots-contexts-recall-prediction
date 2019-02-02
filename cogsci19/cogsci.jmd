@@ -6,34 +6,33 @@ author:
 - name: "Pernille Hemmer"
   email: "pernille.hemmer@rutgers.edu"
 affiliation:
-- "Department of Psychology"
-- "Rutgers New Brunswick"
-- "Piscawtaway NJ, 08854"
+- "Department of Psychology, Rutgers University, New Brunswick"
+- "152 Frelinghuysen Road, Piscataway, NJ 08854"
+keywords:
+  - Bayesian modeling
+  - memory
+  - learning
+  - belief updating
 bibliography: cogsci.bib
 abstract: |
   In a noisy but structured world, memory can be improved by enhancing limited
-  stimulus-specific memory with statistical information about the context.  In
-  order to do this, people have to be able to learn the statistical structure of
-  their current environment.  One feature of natural environments is that such
-  statistical structure is often systematically related to some (possibly latent)
-  contextual variables.
-
-  We present a Sequential Monte Carlo (particle filter) model of how people
-  track the statistical properties of the environment across multiple contexts.
-  This model approximates non-parametric Bayesian clustering of percepts over
-  time, capturing how people impute structure in their perceptual experience in
-  order to more efficiently encode that experience in memory.  Each trial is
-  treated as a draw from a context-specific distribution, where the number of
-  contexts is unknown (and potentially infinite).  The model maintains a finite
-  set of hypotheses about how the percepts encountered thus far are assigned to
-  contexts, updating these in parallel as each new percept comes in.
-
-  We apply this model to a recall task where subjects had to recall the position
-  of dots [@Robbins2014].  Unbeknownst to subjects, each
-  dot appeared in one of a few pre-defined regions on the screen.  Our model
-  captures subjects' ability to learn the inventory of contexts, the statistics of
-  dot positions within each context, and the statistics of transitions between
-  contexts—as reflected in both recall and prediction.
+  stimulus-specific memory with statistical information about the context.  To
+  do this, people have to learn the statistical structure of their current
+  environment.  We present a Sequential Monte Carlo (particle filter) model of
+  how people track the statistical properties of the environment across multiple
+  contexts.  This model approximates non-parametric Bayesian clustering of
+  percepts over time, capturing how people impute structure in their perceptual
+  experience in order to more efficiently encode that experience in memory.
+  Each trial is treated as a draw from a context-specific distribution, where
+  the number of contexts is unknown (and potentially infinite).  The model
+  maintains a finite set of hypotheses about how the percepts encountered thus
+  far are assigned to contexts, updating these in parallel as each new percept
+  comes in.  We apply this model to a recall task where subjects had to recall
+  the position of dots [@Robbins2014].  Unbeknownst to subjects, each dot
+  appeared in one of a few pre-defined regions on the screen.  Our model
+  captures subjects' ability to learn the inventory of contexts, the statistics
+  of dot positions within each context, and the statistics of transitions
+  between contexts—as reflected in both recall and prediction.
 
 ---
 
@@ -157,9 +156,9 @@ _online_, with one data point at a time.  This model thus captures psychological
 constraints on the discovery of latent contexts which is not captured by
 previous Bayesian models.
 
-## Data
+# Data
 
-```{julia; label="stimuli"; fig_cap="All locations that subject 4 studied (left), color-coded by their block (right), large dots show the average location for each block, and the gray lines show the sequence of blocks"; fig_width=6; fig_height=3}
+```{julia; label="stimuli"; fig_cap="All locations that subject 4 studied (left), color-coded by their block (right), large dots show the average location for each block, and the gray lines show the sequence of blocks"}
 
 nblock = length(unique(recall1[:block]))
 
@@ -184,7 +183,7 @@ p2 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
 @df recall1 scatter!(p2, :theta, :rho, group=:block, proj=^(:polar),
                         palette = block_pallete, legend=false)
 
-plot(p1, p2)
+plot(p1, p2, size=(850, 400))
 
 ```
 
@@ -221,7 +220,7 @@ block (defined as a cluster of trials at one mean) was followed by a prediction
 for the expected dot location 10 trials from the current trial. This resulted in
 a total of 280 trials: 80 prediction trials and 200 recall trials.
 
-## Modeling
+# Modeling
 
 Our model has three components.  First, we model how people infer the assignment
 of stimuli to contexts as nonparametric Bayesian clustering, approximated
@@ -230,7 +229,7 @@ locations as Bayesian cue combination with a prior from the context [much like
 @Huttenlocher1991].  Third, we model subjects' predictions about future
 locations via the posterior predictive distribution of the context model.
 
-### Context model
+## Context model
 
 We modeled learners inferences about the underlying context on each trial as a
 sequential Bayesian non-parametric clustering problem.  The goal of the learner
@@ -264,7 +263,7 @@ that it only requires tracking the sufficient statistics of the previous
 observations from the cluster (sample mean and covariance), and not the
 individual observations.
 
-### Inference: Sequential Monte Carlo
+## Inference: Sequential Monte Carlo
 
 Instead of a standard batch inference technique, we use an online, Sequential
 Monte Carlo/particle filter technique.  This method approximates the posterior
@@ -310,7 +309,7 @@ learning and memory [@Sanborn2010; @Kleinschmidt2018b].
 [^revise]: These approaches also do not _preclude_ revising previous decisions,
     they just do not _require_ it.
 
-### Encoding and recall
+## Encoding and recall
 
 The noisy memory trace is modeled as a normal distribution centered at the
 studied location $x$ with an isometric covariance matrix $\Sigma_x$, whose
@@ -337,7 +336,7 @@ $$
     ({\Sigma^{(k)}_c}^{-1} \mu^{(k)}_c + \Sigma_x^{-1} x)
 $$
 
-### Prediction
+## Prediction
 
 To model subjects predictions about future locations, we sample 100 locations
 from the posterior predictive distribution of the population of particles.  To
@@ -348,7 +347,7 @@ point from the posterior predictive distribution of the resulting cluster.  In
 the case that the predicted cluster is a new cluster, we sample from the prior
 predictive.
 
-## Modeling procedure
+## Procedure
 
 To evaluate this model, we simulated the data from @Robbins2014 with a range of
 parameter values.  The concentration parameter $\alpha$ was set to $0.01, 0.1,
@@ -411,7 +410,7 @@ plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
                          recall1[:block],
                          block_pallete),
           title="Euclidean distance"),
-     aspect_ratio=:equal, layout=(1,2), size=(800,400))
+     aspect_ratio=:equal, layout=(1,2), size=(600,300))
 
 ```
 
