@@ -99,7 +99,7 @@ $endif$
   $endif$ %                     % end author affiliations
   $sep$\AND %
   $endfor$ %                    % end for(author)
-  $if(affiliation)$             % handle standalone affiliations
+  $if(affiliation)$\\           % handle standalone affiliations
   $for(affiliation)$$affiliation$$sep$\\  %
   $endfor$
   $endif$%
