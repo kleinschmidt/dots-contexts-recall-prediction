@@ -582,7 +582,7 @@ predicted_good = @_ predicted_all |>
             on=[:subjid1, :block, :respnr]) |>
     sort!(_, (:subjid1, :respnr, :pred))
 
-predicted1 = @where(predicted_good, :subjid1 .== 4)
+predicted1 = @where(predicted_good, :subjid1 .== 7)
 
 prediction_deviations = @_ predicted_good |>
     @transform(_, resp_dev = rho.(:x.-:x_resp, :y.-:y_resp), 
@@ -592,7 +592,7 @@ prediction_deviations = @_ predicted_good |>
 
 ```
 
-```{julia; label="pred-examples"; fig_cap="Subject 7's (red points) and model's (gray regions) predictions about upcoming locations at various points throughout the experiment and various prediction horizons.  The white points show the last recalled location"}
+```{julia; label="pred-examples"; fig_cap="Subject 7's (red points) and model's (gray regions) predictions about upcoming locations at various points throughout the experiment and various prediction horizons.  The white points show the last recalled location."}
 
 white_to_black = cgrad([Gray(.9), Gray(0)])
 
