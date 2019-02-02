@@ -62,7 +62,7 @@ end
         group := nothing
         color := Gray(0.2)
         seriestype := :path
-        cos.(linspace(0,2π,200)), sin.(linspace(0,2π,200))
+        cos.(range(0,stop=2π,length=200)), sin.(range(0,stop=2π,length=200))
     end
     
 end
