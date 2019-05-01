@@ -544,6 +544,24 @@ plot_baseline!(bs_avgrho,
 
 ```
 
+```{julia}
+
+# there's a lot of variability by subjects (and small $n$ so very low power)
+
+summaries_by_subj = by(recalled_all, [:α, :ρ, :Sσ, :subjid1]) do d
+    DataFrame(cos=cosinesim(d), mse=Experiments.mse(d,d))
+end
+
+summaries_by_subj_cis = by(summaries_by_subj,
+                           [:α, :ρ, :Sσ],
+                           :cos => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
+
+@_ summaries_by_subj_cis |>
+    @where(_, :Sσ .≈ 0.01) |>
+    @df plot(:α, :mean, ribbon = (:mean .- :low, :mean .- :high), group=:ρ, xscale=:log10)
+
+```
+
 Figure -@fig:cosinesim-by-param shows the cosine similarity with of all
 subjects' responses with the multi-context Bayesian model.  At all parameter
 settings, the model performs better than chance, predicting subjects' recall
