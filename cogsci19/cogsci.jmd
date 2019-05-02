@@ -370,7 +370,7 @@ is available from [osf.io/dqz73/](https://osf.io/dqz73/)
 
 Random.seed!(2019)
 
-rf = RecallFilter(FearnheadParticles(100,
+rf = RecallFilter(ChenLiuParticles(100,
                                      prior_optimized,
                                      StickyCRP(0.01, 0.9)),
                   Matrix(0.01I,2,2))
