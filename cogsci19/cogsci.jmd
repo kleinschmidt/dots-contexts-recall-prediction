@@ -1,0 +1,801 @@
+---
+title: "A Bayesian model of memory in a multi-context environment"
+author:
+- name: "Dave F. Kleinschmidt"
+  email: "dave.kleinschmidt@rutgers.edu"
+- name: "Pernille Hemmer"
+  email: "pernille.hemmer@rutgers.edu"
+affiliation:
+- "Department of Psychology, Rutgers University, New Brunswick"
+- "152 Frelinghuysen Road, Piscataway, NJ 08854"
+keywords:
+  - Bayesian modeling
+  - memory
+  - learning
+  - belief updating
+bibliography: cogsci.bib
+abstract: |
+  In a noisy but structured world, memory can be improved by enhancing limited
+  stimulus-specific memory with statistical information about the context.  To
+  do this, people have to learn the statistical structure of their current
+  environment.  We present a Sequential Monte Carlo (particle filter) model of
+  how people track the statistical properties of the environment across multiple
+  contexts.  This model approximates non-parametric Bayesian clustering of
+  percepts over time, capturing how people impute structure in their perceptual
+  experience in order to more efficiently encode that experience in memory.
+  Each trial is treated as a draw from a context-specific distribution, where
+  the number of contexts is unknown (and potentially infinite).  The model
+  maintains a finite set of hypotheses about how the percepts encountered thus
+  far are assigned to contexts, updating these in parallel as each new percept
+  comes in.  We apply this model to a recall task where subjects had to recall
+  the position of dots [@Robbins2014].  Unbeknownst to subjects, each dot
+  appeared in one of a few pre-defined regions on the screen.  Our model
+  captures subjects' ability to learn the inventory of contexts, the statistics
+  of dot positions within each context, and the statistics of transitions
+  between contexts—as reflected in both recall and prediction.
+
+---
+
+
+```{julia; echo=false; results="hide"}
+using Revise
+
+using Weave
+Weave.set_chunk_defaults(Dict{Symbol,Any}(
+    :results => "hidden",
+    :echo => false
+))
+
+using 
+    LinearAlgebra, 
+    Random,
+    Statistics
+
+using 
+    Plots,
+    PlotThemes,
+    StatPlots,
+    RecipesBase,
+    Colors, 
+    Images,
+    DataFrames,
+    DataFramesMeta,
+    Underscore,
+    StatsBase,
+    ConjugatePriors,
+    Particles,
+    Distances, 
+    JuliennedArrays,
+    Bootstrap
+
+theme(:default, markerstrokecolor=:white)
+
+flip(x::AbstractVector) = reshape(x, (1,:))
+
+const It = Base.Iterators
+
+Revise.track("../modeling.jl")
+using .DotLearning
+Revise.track("../experiments.jl")
+using .Experiments
+include("../plots.jl")
+
+using JLD2
+@load "../data/dots2014.jld2" recall pred
+# recall data from one subject
+one_subj = 4
+recall1 = @where(recall, :subjid1 .== one_subj)
+
+# load the prior _parameters_ to get around
+@load "../prior_empirical_params.jld2"
+prior_optimized = ConjugatePriors.NormalInverseWishart(μ, κ, Λ, ν)
+import .Experiments: cosinesim
+cosinesim(d) = cosinesim(d,d)
+
+rho(args...) = sqrt(sum(args.^2))
+```
+
+```julia
+
+@load "../results/run3-2019-01-07T21:23:16.243-recalled-predicted.jld2" recalled_all predicted_all
+
+summaries_by_iter = by(recalled_all, [:α, :ρ, :Sσ, :iter]) do d
+    DataFrame(cos=cosinesim(d), mse=Experiments.mse(d,d))
+end
+
+boot_ci(x, f=mean, n=1000, cil=0.95) = confint(bootstrap(f, x, BasicSampling(n)),
+                                               BasicConfInt(cil))
+
+recalled_summaries = by(summaries_by_iter, [:α, :ρ, :Sσ]) do d
+    # collect only necessary here because of Bootstrap.jl#42, can remove once
+    # #43 is merged
+    (c, clow, chigh), = boot_ci(collect(d[:cos]))
+    (m, mlow, mhigh), = boot_ci(collect(d[:mse]))
+    DataFrame(cos=c, cos_low=clow, cos_high=chigh,
+              mse=m, mse_low=mlow, mse_high=mhigh)
+end
+
+```
+
+
+# Introduction
+
+Every cognitive function---perceptual inference, learning, memory, decision
+making, etc.---takes place in _context_, and understanding these cognitive
+functions requires understanding the role that the context plays.  When
+cognitive functions are considered in isolation, context can appear to be a
+source of errors, distraction, or added uncertainty.  For example, @Roediger1995
+induced "false recall" by having subjects study lists of near associates of a
+word but not the critical word itself.  However, when considered ecologically,
+larger-scale regularities in the environment mean that context can function as a
+source of additional _information_, reducing the amount of information that must
+be stored about particular instances.  Evidence abounds that people draw on the
+_context_ an item occurred in as an additional source of information [e.g.,
+@DuBrow2017; @Huttenlocher1991; @Orhan2013; @Schulz2018; @Qian2014].  In this
+view, so-called "false recall" is really a reflection of the mis-match between
+the _experimenter's_ defined context and the _subject's_ inferred context.
+
+However, this raises the question of what _is_ a context, and how do people know?
+For instance, @Huttenlocher1991 found that immediate spatial recall of a
+location in a circular area is biased towards the average radius of all
+locations in the experiment.  They proposed that memory for an individual item's
+location is encoded at two levels: the item itself, and the _category_ it was
+assigned to.  However, their proposed model does not address what constitutes a
+category or how subjects decide, and instead simply defines the category based
+on the long-run statistics of locations encountered in their experiment.
+However, @Robbins2014 discovered that in a similar task with multiple (implicit)
+contexts, subjects recall draws on _context_-level statistics, rather than the
+long-run (experiment-level) statistics.
+
+Here, we propose a Bayesian model of learning and memory in multi-context
+environments, and apply this model to the data from @Robbins2014 human spatial memory
+experiment.  The model treats the problem of identifying latent contexts as a
+sequential non-parametric clustering problem, where agents must update their
+beliefs about which context they are in and the properties of that context
+_online_, with one data point at a time.  This model thus captures psychological
+constraints on the discovery of latent contexts which is not captured by
+previous Bayesian models.
+
+# Data
+
+```{julia; label="stimuli"; fig_cap="All locations that subject 4 studied (left), color-coded by their block (right), large dots show the average location for each block, and the gray lines show the sequence of blocks"}
+
+nblock = length(unique(recall1[:block]))
+
+block_pallete = LCHab.(60, 60, range(0, 320, length=nblock))
+
+p1 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
+          axis=false, grid=false, legend=false,
+          title="Studied locations")
+@df recall1 scatter!(p1, :theta, :rho, color=:black, markeralpha=0.5)
+
+p2 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
+          palette = block_pallete, axis=false, grid=false,
+          title="Colored by block")
+@_ recall1 |>
+    by(_, [:block], :theta=>mean, :rho=>mean) |>
+    @df(_, plot!(p2, :theta_mean, :rho_mean, color=GrayA(0.5, 0.2)))
+@_ recall1 |>
+    by(_, [:block], :theta=>mean, :rho=>mean) |>
+    @df(_, scatter!(p2, :theta_mean, :rho_mean, group=:block,
+                    c=(1:nblock)',
+                    markersize=8, markeralpha=0.2))
+@df recall1 scatter!(p2, :theta, :rho, group=:block, proj=^(:polar),
+                        palette = block_pallete, legend=false)
+
+plot(p1, p2, size=(850, 400))
+
+```
+
+The data we model is described in detail in @Robbins2014, but we provide a brief
+summary of the procedure here.  In this experiment, 8 participants were asked to
+record the location of a dot presented in a circle (see Figure -@fig:stimuli)
+and reconstruct that location from memory. Participants were given a cover story
+in order to keep the task engaging; they were told that the circle was a garden
+and the dots were moles. In order to save their garden, they had to “catch” the
+moles by clicking on the locations where they saw them.
+
+After an initial presentation of 20 dots at the center of the circle, dots were
+presented in blocks (3, 6, 9, or 12 presentations in a cluster), sampled from a
+multinomial normal distribution with a mean of a given radius and one of three
+variances (0.01, 0.04, and 0.06 in a unit circle).  There was no explicit signal
+to the subject when one block ended and the next began.  The mean angles and
+radii were informed by @Huttenlocher1991. There were 24 angle measures including
+the axes, and the measures consisted of the same relative angles in each
+quadrant. Four different distances measuring out from the center of the circle
+to the circumference were chosen
+
+Each dot was viewed for one second followed by a combined visual mask and
+distractor task designed to remove the dot from participants' visual field and
+introduce uncertainty in the memory process. This mask consisted of a grid of
+black and white squares; after this mask was removed, an “X” appeared on the
+screen and participants were asked to report the color of the square (black or
+white)previously in that location. Data from the distractor task was recorded
+but not analyzed. After the completion of the distractor task, participants were
+asked to **recall** the location of the dot from memory by clicking a spot in
+the circle. After every three trials, participants were asked to make a
+**prediction** about a future dot location. Prediction trials alternated between
+prediction for the next trial and prediction for five trials from now. Each
+block (defined as a cluster of trials at one mean) was followed by a prediction
+for the expected dot location 10 trials from the current trial. This resulted in
+a total of 280 trials: 80 prediction trials and 200 recall trials.
+
+# Modeling
+
+Our model has three components.  First, we model how people infer the assignment
+of stimuli to contexts as nonparametric Bayesian clustering, approximated
+sequentially with a particle filter.  Second, we model encoding and recall of
+locations as Bayesian cue combination with a prior from the context [much like
+@Huttenlocher1991].  Third, we model subjects' predictions about future
+locations via the posterior predictive distribution of the context model.
+
+## Context model
+
+We modeled learners inferences about the underlying context on each trial as a
+sequential Bayesian non-parametric clustering problem.  The goal of the learner
+in this model is to infer the cluster assignment $z_i$ of observation $x_i$,
+given the previous observations $x_{1:i-1}$ and their labels $z_{1:i-1}$:
+
+$$p(z_i=j | x_{1:i}, z_{1:i-1}) \propto p(x_i | z_i=j, z_{1:i-1}, x_{1:i-1})
+p(z_i=j | z_{1:i-1}) $$
+
+The sequential prior $p(z_i=j | z_{1:i-1})$ is a "Hibachi Grill Process"
+[@Qian2014; @Fox2011], which is like the standard Chinese Restaurant Process (CRP) with an
+added (constant) probability assigned to the previous state.  This corresponds
+to the following generative model: with probability $0 < \rho < 1$ the previous
+state is picked, $j=z_{i-1}$, and with probability $1-\rho$ a component is
+chosen from a Chinese Restaurant Process with concentration $\alpha$, which
+assigns probability to each state proportional to the number of observations
+assigned to it already,[^counts] and creates a new state with probability
+proportional to $\alpha > 0$.  We refer to the $\rho$ parameter as the
+"stickiness" because it controls how likely, a priori, the model is to stick to
+the same state.
+
+[^counts]: One important difference from a standard CRP is that only non-sticky
+    transitions count for the purposes of sampling new states from the CRP.
+
+The likelihood
+$p(x_i | z_i=j, z_{1:i-1}, x_{1:i-1}) = p(x_i | x_{\{k; z_k=j\}})$ is computed
+by marginalizing over the mean and covariance of a multivariate normal
+distribution given the data points previously assigned to that cluster and a
+conjugate Normal-Inverse Wishart prior [@Gelman2003].  This has the advantage
+that it only requires tracking the sufficient statistics of the previous
+observations from the cluster (sample mean and covariance), and not the
+individual observations.
+
+## Inference: Sequential Monte Carlo
+
+Instead of a standard batch inference technique, we use an online, Sequential
+Monte Carlo/particle filter technique.  This method approximates the posterior
+beliefs after $i-1$ observations $p(z_{1:i-1} | x_{1:i-1})$ as a weighted
+population of $K$ particles, each of which is one possible value of the $i-1$
+labels, denoted $z_{1:i-1}^{(k)}$.  This population of particles represents an
+_importance sample_ from the posterior.  When a new observation $x_i$ comes in,
+the population moves to target the updated posterior $p(z_{1:i} | x_{1:i})$.
+There are many algorithms to do this, and the effectiveness of a particular
+algorithm will depend on the problem.  We use the algorithm of @Chen2000 [as
+described in @Fearnhead2004]: for each particle $k$, a state assignment is
+sampled for $x_i$ according to $p(z_i | x_{1:i}, z^{(k)}_{1:i-1})$, and the
+weight $w^{(k)}_i$ is updated by the ratio of
+$$
+\frac{\sum_j p((z_{1:i-1}^{(k)},j) | x_{1:i})}
+     {p(z_{1:i-1}^{(k)} | x_{1:i-1})}
+$$
+to ensure that each particle's weight reflects its ability to _predict_ the
+point $x_i$, rather than just _explain_ it.  When too much of the total weight
+for the population (constrained to sum to 1) is captured by a small number of
+particles (measured by the ratio of the variance of the weights to their mean
+being greater than $0.5$), a new population is resampled (with replacement) and
+the weights are set to be uniform.
+
+This is for two reasons.  First, because we wish to query the
+model's beliefs about the current context at every point throughout the
+experiment, an online approximation is much more computationally efficient.  A
+batch algorithm like Gibbs sampling or Hamiltonian Monte Carlo requires one full
+sweep through the data for each sample, which must be done independently for
+each data point, so drawing $K$ samples for each of $N$ data points is
+$O(KN^2)$.  A particle filter propagates uncertainty with a fixed population of
+$K$ particles, updating each particle in parallel as each data point comes in,
+meaning the complexity is only $O(KN)$.  This means it is possible to effectively
+model longer experiments.
+
+Second, an online learning algorithm better approximates _psychological_
+constraints on learning, and in particular unlike batch MCMC algorithms does not
+assume that learners can go back and revisit each observation and their
+decisions about it.[^revise] This class of models thus provides a possible
+bridge between computational and algorithmic level approaches to modeling
+learning and memory [@Sanborn2010; @Kleinschmidt2018b].
+
+[^revise]: These approaches also do not _preclude_ revising previous decisions,
+    they just do not _require_ it.
+
+## Encoding and recall
+
+The noisy memory trace is modeled as a normal distribution centered at the
+studied location $x$ with an isometric covariance matrix $\Sigma_x$, whose
+diagonal elements are all equal to $\sigma^2_x$, which is a free parameter of
+the model.  This noisy memory trace is combined with a _context prior_, which is
+approximated by the population of particles.  Specifically, each particle $k$
+represents one possible assignment of the observations $x_{1:i}$ to clusters
+$z^{(k)}_{1:i}$.  We can thus model each particle's context as the expected mean
+and covariance matrix for all the points that particle $k$ has assigned to the
+same cluster as the studied point $z^{(k)}_i$:
+
+$$
+\mu^{(k)}_c, \Sigma^{(k)}_c = E(\mu, \Sigma)_{p(\mu, \Sigma | x_{1:i},
+  z^{(k)}_{1:i})}
+$$
+
+Then the best guess of the studied location under particle $k$'s model of the
+context is the combination of a normal likelihood (from the noisy trace of the
+studied item) and a normal prior (from the context), which works out to be the
+inverse variance-weighted average of the two means:
+
+$$
+\hat x^{(k)} = ({\Sigma^{(k)}_c}^{-1} + \Sigma_x^{-1})^{-1}
+    ({\Sigma^{(k)}_c}^{-1} \mu^{(k)}_c + \Sigma_x^{-1} x)
+$$
+
+## Prediction
+
+To model subjects predictions about future locations, we sample 100 locations
+from the posterior predictive distribution of the population of particles.  To
+sample one predicted location at a $n$ trials in the future, we sample a
+particle from the population according to their weights, draw a sample of $n$
+future states from that particle's Hibachi Grill Process, and then sample one
+point from the posterior predictive distribution of the resulting cluster.  In
+the case that the predicted cluster is a new cluster, we sample from the prior
+predictive.
+
+## Procedure
+
+To evaluate this model, we simulated the data from @Robbins2014 with a range of
+parameter values.  The concentration parameter $\alpha$ was set to $0.01, 0.1,
+1,$ or $10$, and the stickiness parameter $\rho$ was set to $0.1, 0.5$, or
+$0.9$.  The memory noise standard deviation parameter $\sigma_x$ varied along
+$0.01, 0.1, 1$, (for a circle with a radius of 1), although only results from
+$\sigma_x = 0.1$ are presented here.  The prior for the cluster parameters was
+based on the distribution of true block means/covariances.  In principle, this
+could be inferred as well but we leave that enhancement for future work.  We ran
+10 repetitions with each of the 36 combinations of parameters, all of which used
+100 particles for each subject's data.
+
+The particle filter algorithm was implemented in Julia 1.1 [@Bezanson2017].
+The code, simulation results, and Weave.jl [@Pastell2017] source for this paper
+is available from [osf.io/dqz73/](https://osf.io/dqz73/)
+
+# Results
+
+```{julia; }
+
+Random.seed!(2019)
+
+rf = RecallFilter(ChenLiuParticles(100,
+                                     prior_optimized,
+                                     StickyCRP(0.01, 0.9)),
+                  Matrix(0.01I,2,2))
+filter!(rf, extract_data(recall1, rf))
+```
+
+## Clustering
+
+```{julia; label="assign-mats"; fig_cap="Cluster assignment similarity matrix for clusters inferred by one population of particles from subject 4's studied locations (left), with the true (experimenter-defined) blocks outlined in colors (see Figure -@fig:stimuli).  The similarity matrix based on the Euclidean distance between each location is shown for comparison (right) and to show that the model groups some similar locations into the same cluster even though they are from different blocks."}
+
+filter_sim = assignment_similarity(rf)
+
+# outline the boundaries of the blocks in ~colors~
+function outline_blocks(sim_mat, blocks, block_pallete)
+    block_colors = RGB.(Gray.(sim_mat))
+    nblock = length(unique(blocks))
+    for n in 1:nblock
+        start = findfirst(isequal(n), blocks)
+        stop = findlast(isequal(n), blocks)
+        color = block_pallete[n]
+        block = view(block_colors, start:stop, start:stop)
+        block[1:end, 1] .= color
+        block[1:end, end] .= color
+        block[1, 1:end] .= color
+        block[end, 1:end] .= color
+    end
+    return block_colors
+end
+
+euc_dist = @_ recall1 |>
+    @with(_, hcat(:x, :y)) |>
+    Distances.pairwise(Euclidean(), _')
+
+plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
+          title="Inferred clusters", guide="Trial"),
+     plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),
+                         recall1[:block],
+                         block_pallete),
+          title="Euclidean distance"),
+     aspect_ratio=:equal, layout=(1,2), size=(600,300))
+
+```
+
+First, how well does this algorithm do at recovering the underlying cluster
+structure?  This is not a straightforward question to answer: each particle in
+the population represents a potentially different assignment of observations to
+clusters, and the cluster indices used in one particle might not align with
+those in another particle.  To get around this we look at the assignment
+similarity matrix, which is an $N\times N$ matrix, where element $(i,j)$ is the
+probability that trials $i$ and $j$ are assigned to the same cluster.  This
+probability is calculated by averaging across all particles in the population
+according to their weight.
+
+Figure -@Fig:assign-mats shows the assignment similarity matrix for one subject,
+based on a 100-particle filter with $\alpha=0.01, \rho=0.9$ (left) with the
+true, experimenter-defined block structure is outlined in the colors from Figure
+-@fig:stimuli, and the pairwise Euclidean distance between the locations for
+comparison (right).  This example shows a number of important features of the
+model's inferences about the underlying changes in context.  First, relative to
+the experimenter-defined blocks, the model occasionally undersegments, grouping
+adjacent blocks together into a single context.  Second, the model also
+sometimes infers that it has _returned_ to a previous context, instead of
+creating a new context when it infers that the block has changed.  This can be
+seen from the off-(block)-diagonal entries in the assignment similarity matrix
+(Figure -@Fig:assign-mats, left).  As the Euclidean similarity matrix (Figure
+-@Fig:assign-mats, right) shows, this tends to happen when the points in two
+blocks are close together.  Third, because of the online nature of the model, it
+maintains relatively less uncertainty about the clustering of early trials.
+Note though that Figure -@Fig:assign-mats shows the beliefs of the model at the
+_end_ of the experiment, which reflect the totality of the locations it has
+encountered.
+
+## Recall
+
+```{julia; label="recall-results"}
+
+rec_params_good = @_ recalled_summaries |>
+    @where(_, :Sσ .≈ 0.01) |>
+    sort!(_, :cos, rev=true) |> 
+    first(_, 1) 
+
+# average over iterations
+recalled_good = @_ rec_params_good |>
+    join(recalled_all, _, on=[:α, :ρ, :Sσ]) |>
+    @by(_, [:subjid1, :block, :rep, :rep_number, :respnr, :rad, :var, :x, :y, :x_resp, :y_resp],
+        x_mod = mean(:x_mod), y_mod = mean(:y_mod)) 
+
+recalled1 = @_ recalled_good |>
+    @where(_, :subjid1 .== one_subj)
+
+# baselines
+
+known_recalled = by(recall, :subjid1) do d
+    @_ KnownFilter(prior_optimized) |>
+    RecallFilter(_, Matrix(0.01I,2,2)) |>
+    filter!(_, extract_data(d, _)) |>
+    DataFrame |>
+    hcat(d, _) |>
+    deletecols!(_, :subjid1) |>
+    @transform(_, cosinesim = 1 .- Distances.colwise(CosineDist(), 
+                                                   hcat(:x_mod.-:x, :y_mod.-:y)', 
+                                                   hcat(:x_resp.-:x, :y_resp.-:y)'))
+end
+
+known_recalled1 = @where(known_recalled, :subjid1 .== one_subj)
+
+baseline!(df) = @_ df |>
+    @transform(_, gt_rho_avg = rho.(:x,:y) .> mean(rho.(:x, :y))) |>
+    # @with(_, (hcat(:x,:y) .* ifelse.(:gt_rho_avg, -1, 1))')
+    @transform(_, cos_center = 1 .- Distances.colwise(CosineDist(),
+                                                      -hcat(:x, :y)', 
+                                                      hcat(:x_resp.-:x, :y_resp.-:y)'),
+                  cos_mean_rho = 1 .- Distances.colwise(CosineDist(),
+                                                        (hcat(:x,:y) .* ifelse.(:gt_rho_avg, -1, 1))',
+                                                        hcat(:x_resp.-:x, :y_resp.-:y)'),
+                  cos_mod = 1 .- Distances.colwise(CosineDist(),
+                                                   hcat(:x_mod.-:x, :y_mod.-:y)',
+                                                   hcat(:x_resp.-:x, :y_resp.-:y)'))
+
+baseline_good = baseline!(recalled_good)
+bs_center, bs_avgrho = @_ baseline_good |>
+    @where(_, (!isnan).(:cos_center)) |>    # there is one trial with zero deviation...
+    @with(_, (mean(:cos_center), mean(:cos_mean_rho)))
+
+```
+
+```{julia; label="example-subj-recall"; fig_cap="Subject 4's recalled locations (gray arrows, pointing from studied to recalled location) compared with model simulation (blue arrows; \$\\alpha=0.01, \\rho=0.9, \\sigma_x=0.1\$)"}
+@df recalled1 arena(:x, :y, quiver=(:x_mod .- :x, :y_mod .- :y),
+                    seriestype=:quiver, label="Model")
+@df recalled1 quiver!(:x, :y, quiver=(:x_resp .- :x, :y_resp .- :y),
+                      color=GrayA(0.0, 0.3), label="Behavior")
+```
+
+Next, we assess how well the inferred contexts can predict recall.  Figure
+-@fig:example-subj-recall shows one subject's actual deviations from studied to
+recalled locations (gray arrows) versus the model's predicted deviations (blue
+arrows).  To quantify goodness of fit, we use the cosine similarity of the
+model's and subject's recall deviation (i.e., blue and black arrows in
+Figure -@Fig:example-subj-recall), which ranges from 1 (deviations perfectly aligned) to
+$-1$ (deviations in opposite directions), with 0 corresponding to orthogonal
+deviations.  We chose this metric because it is less sensitive to
+large outlier responses than mean-squared error, and because approximations of
+the likelihood of a subject's response given the model is highly sensitive to
+free parameters and difficult to reliably estimate.  Moreover, the baseline
+models we compare against also do not have straightforward likelihood models,
+but they _do_ make straightforward predictions about the directions of recall
+deviations.
+
+```{julia; label="cosinesim-by-param"; fig_cap="Mean cosine-similarity of model predicted and actual recall deviations across parameter values (ribbons show 95% bootstrapped CIs over model runs).  Gray lines show baselines: always deviate toward center, average radius, and center of true clusters"}
+
+@df(@where(recalled_summaries, :Sσ .≈ 0.01),
+    plot(:α, :cos, ribbon = (:cos .- :cos_low, :cos_high .- :cos), group=:ρ, xscale=:log10, 
+         xlims=(10^-2.5, 10^1.5), ylims=(0, 0.12), seriestype=:line,
+         xlabel="Eagerness to create new clusters (concentration   \\alpha)",
+         ylabel=("Cosine sim. with behavior"),
+         legend=:bottomright, legend_title="Stickiness   \\rho", line=2))
+
+baseline_x = [10^-2.1, 10^1.1]
+
+function plot_baseline!(y, label)
+    plot!(baseline_x, ones(2)*y, color=Gray(0.7), label="")
+    annotate!(baseline_x[end]*1.05, y, label)
+end
+
+plot_baseline!(cosinesim(known_recalled),
+               text("Known\nclusters", 10, RGB(Gray(0.7)), :left, :bottom))
+plot_baseline!(bs_center,
+               text("Center", 10, RGB(Gray(0.7)), :left, :bottom))
+plot_baseline!(bs_avgrho,
+               text("Mean rad.", 10, RGB(Gray(0.7)), :left, :top))
+
+```
+
+```{julia}
+
+# there's a lot of variability by subjects (and small $n$ so very low power)
+
+summaries_by_subj = by(recalled_all, [:α, :ρ, :Sσ, :subjid1]) do d
+    DataFrame(cos=cosinesim(d), mse=Experiments.mse(d,d))
+end
+
+summaries_by_subj_cis = by(summaries_by_subj,
+                           [:α, :ρ, :Sσ],
+                           :cos => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
+
+# @_ summaries_by_subj_cis |>
+#     @where(_, :Sσ .≈ 0.01) |>
+#     @df plot(:α, :mean, ribbon = (:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10)
+
+```
+
+Figure -@fig:cosinesim-by-param shows the cosine similarity with of all
+subjects' responses with the multi-context Bayesian model.  The ribbons show the
+95% bootstrapped confidence intervals over model runs, which indicate that the
+approximate inference strategy leads to reasonably consistent inferences for a
+given set of parameters.  At all parameter settings, the model performs better
+than chance, predicting subjects' recall deviation directions at a cosine
+similarity of around $0.1$ (relative to a chance level of 0).  The model
+performs best for high $\rho$ stickiness and low $\alpha$ concentration.
+
+We also compare the model's performance against three baselines.  First, we
+compare it against a "known clusters" model, which uses the true (experimenter
+defined) clusters with the same Bayesian cue combination model of encoding and
+recall.  Second, we compare it to two baselines based on previous literature on
+similar memory tasks [@Huttenlocher1991]: one that always biases recall towards
+the center (the average location of all trials), and one that biases recall
+towards the mean radius.
+
+First, at the whole range of parameters explored, the multi-context model
+performs better than the center- or mean-radius-biased baselines.  Second,
+except for low stickiness $\rho=0.1$, our model provides a better fit to human
+behavior than the "known clusters" baseline, which differs from our model only
+in that the true cluster labels are provided for each data point, rather than
+being inferred.  This suggests that, at least according to the cosine similarity
+metric, our context-inference model better captures how people combine
+information about the current context during recall than the "ground truth"
+clusters.
+
+However, an important caveat is that there is substantial variability across
+_subjects_.  The cosine similarity for $\alpha = 0.01, \rho = 0.9$ has a 95%
+boostrapped CI across subjects of $[0.05, 0.17]$, which while significantly
+better than chance is not significantly better than the baseline models, even
+when taking into account the substantial variability in the cosine similarity
+for the baseline models themselves.  With only 8 subjects in this dataset it is
+unclear how well the model's performance will generalize to other datasets, and
+future work with better-powered designs is required.
+
+## Prediction
+
+```{julia}
+
+predicted_good = @_ predicted_all |>
+    join(_, deletecols!(copy(rec_params_good), :Sσ), on=[:α, :ρ]) |>
+    join(_, @select(recall, :subjid1, :block, :respnr, :x, :y), 
+            on=[:subjid1, :block, :respnr]) |>
+    sort!(_, (:subjid1, :respnr, :pred))
+
+predicted1 = @where(predicted_good, :subjid1 .== 7)
+
+prediction_deviations = @_ predicted_good |>
+    @transform(_, resp_dev = rho.(:x.-:x_resp, :y.-:y_resp), 
+                  mod_dev = mean.(pairwise.(Ref(Euclidean()), 
+                                            transpose.(hcat.(:x, :y)),
+                                            transpose.(:xys_mod))))
+
+```
+
+```{julia; label="pred-examples"; fig_cap="Subject 7's (red points) and model's (gray regions) predictions about upcoming locations at various points throughout the experiment and various prediction horizons.  The white points show the last recalled location."}
+
+white_to_black = cgrad([Gray(.9), Gray(0)])
+
+function plot_prediction_task(xys_mod::Matrix, 
+                              x::Float64, y::Float64, 
+                              x_resp::Float64, y_resp::Float64)
+    p = arena(xys_mod[:,1], xys_mod[:,2], seriestype=:histogram2d, color=white_to_black, 
+              bins=range(-1.2, stop=1.2, length=50), lims=(-1.2, 1.2))
+    scatter!(p, [x], [y], color=:white, markerstrokecolor=Gray(.5))
+    scatter!(p, [x_resp], [y_resp], color=:red)
+    return p
+end
+
+function plot_prediction_task(d::AbstractDataFrame, args...; title=true, kwargs...)
+    plots = let plots = [], title=title
+        @byrow! d begin
+            push!(plots, plot_prediction_task(:xys_mod, :x, :y, :x_resp, :y_resp))
+            title!(plots[end], title ? "Trial $(:respnr) (+$(:pred))" : "")
+        end
+        plots
+    end
+    plot(plots..., args...; kwargs...)
+end
+
+# 23 (+1 and +10...back to center)
+# trial 80 (+5 vs +10)
+# 140 (+1 vs +10)
+
+p1 = @_ predicted1 |>
+    @where(_, :respnr .== 23) |>
+    plot_prediction_task(_, title=true)
+
+p2 = @_ predicted1 |>
+    @where(_, :respnr .== 80) |>
+    plot_prediction_task(_, title=true)
+
+p3 = @_ predicted1 |>
+    @where(_, :respnr .== 140) |>
+    plot_prediction_task(_, title=true)
+
+plot(p1, p2, p3, layout=(3,1), size=(600, 900))
+
+```
+
+Subjects also, every three recall trials, predicted the location where points
+would appear in 1, 5, or 10 trials in the future.  This is a more explicit probe
+of what subjects know about the cluster structure than the recall task.  Figure
+-@fig:pred-examples shows six examples of how the model's prediction about
+upcoming locations capture subjects' behavior.  For +1 trial predictions, the
+model's distribution of predicted locations primarily reflects its beliefs about
+the _current_ cluster (as reflected by the higher density of predictions near
+the white studied point), because of the "sticky" Hibachi Grill Process prior on
+states.  At +10 trials, the model is much more likely to predict the center
+cluster, which recurs frequently throughout the experiment (see also Figure
+-@fig:assign-mats).  Likewise, subjects also have picked up on this pattern and
+are more likely to predict locations close to the center on +10 prediction
+trials.
+
+```{julia; label="pred-dev"; fig_cap="Model predicted (\$\\alpha=0.01, \\rho=0.9\$) and actual deviations from last studied point for prediction task.  Small points show deviations of predictions for each trial, and large points show average deviations for each lag (1, 5, or 10 trials)."}
+
+p = @df(prediction_deviations,
+        scatter(:resp_dev, :mod_dev,
+                xlabel="Response deviation",
+                ylabel="Model predicted", 
+                legend_title = "Predictions for next", legend=:bottomright,
+                group=:pred,
+                smooth=true,
+                markerstrokecolor=:white,
+                markeralpha=.3,
+                line=2,
+                aspect_ratio = :equal,
+                size=(500,250)))
+
+@df(by(prediction_deviations, [:pred], :resp_dev=>mean, :mod_dev=>mean),
+    scatter!(p,
+             :resp_dev_mean, :mod_dev_mean,
+             group=:pred,
+             color = (1:3)',    # use the colors for groups 1:3
+             markersize=8,
+             label=""))
+
+plot!(p, 0:.1:maximum(prediction_deviations[:mod_dev]), x->x, color=GrayA(0.2, 0.2), label="")
+
+```
+
+```{julia; label="pred-cor"}
+
+@_ prediction_deviations |>
+    by(_, [:pred], (:resp_dev, :mod_dev)=> rm->boot_ci(hcat(rm...), x->cor(x)[2]))
+
+center(x) = x .- mean(x)
+
+ρ_dev, ρ_dev_low, ρ_dev_high =
+    @_ prediction_deviations |>
+    by(_, [:pred], :resp_dev=>center, :mod_dev=>center) |>
+    @select(_, :resp_dev_center, :mod_dev_center) |>
+    Matrix |>
+    boot_ci(_, x->cor(x)[2]) |>
+    first |>
+    round.(_, digits=2)
+
+```
+
+Our model also captures how the average distance from the last studied point
+increases as subjects are asked to predict the location of points +1, +5, and
++10 trials into the future (Figure -@Fig:pred-dev, large points).  Moreover, the
+model also captures variation _within_ these delay levels: after removing the
+effect of delay level by centering, the model's and subjects' prediction
+deviations are correlated at $\rho = `j ρ_dev`$ (95% bootstrapped CI: $[`j
+ρ_dev_low`, `j ρ_dev_high`]$, and significant at $p=0.014$ in a mixed model with
+random intercepts and slopes by subject).
+
+# Discussion
+
+We have demonstrated that human recall and prediction in a multi-context spatial
+memory task can be modeled by a Bayesian model that infers the latent contexts
+via non-parametric clustering.  This model updates its beliefs _online_, one
+observation at a time, with Sequential Monte Carlo.  Exploring a range of
+parameters for the state transition prior, we found that subjects recall
+behavior is best captured with high "stickiness" (prior probability of remaining
+in the same cluster) and low concentration (prior probability of creating a new
+cluster).  Together, this suggests that people expect---until they
+receive evidence to the contrary---that contexts will continue for a number of
+trials, and that old contexts will return in the future.
+
+While we treated these parameters as free when fitting our model, this was
+merely a simplifying assumption that we made to make the model easier to
+implement.  It is possible---and conceptually fairly straightforward in a
+Bayesian model like this---that they could be _inferred_ from the same data that
+the model uses to infer the contexts themselves.  It is thus possible that our
+interpretation of what these parameter values mean for people's expectations
+about the latent cluster structure actually reflect what people have _learned_
+from their experience in this particular experiment, where contexts _do_ tend to
+go on for a number of trials and recur multiple times (at least for the central
+cluster).  Future work is required to tease these possibilities apart.
+
+The possibility that people might be inferring the hyperparameters that govern
+how contexts change raises the question of what kind of changes people expect in
+the structure of contexts across environments.  That is, are people's models of
+contexts nested hierarchically, in a way that allows for variation not only in
+the specific features of each context (e.g., the location of dots in space) but
+also the properties of how contexts _change_ within a larger context/environment
+(e.g., the stickiness of contexts)?  This calls for future experiments that
+manipulate the generative model for the contexts themselves, within subjects and
+over time.
+
+More work is also needed to assess whether people actually are remembering and
+revisiting old contexts, as our model assumes.  It is possible that people are
+really just detecting _changes_ in context, and creating a fresh representation
+of a context every time they detect such a change.  One way to address this is
+by simulating such a change-point model, which is the limiting case of our model
+when the concentration parameter $\alpha$ goes to infinity.  Another way is to
+collect more empirical data with changes in context explicitly designed to
+elicit anticipation for returning to old contexts.
+
+Finally, the strategy of our model---inferring discrete changes in context and
+remembering contexts---presupposes a particular underlying structure for how
+contexts actually tend to change in the world.  A number of different strategies
+could be optimal, given different environments, and it is an ecological question
+as to which strategies are likely to be useful in the kinds of environments
+people tend to find themselves in.  For instance, environments where latent
+variables don't change suddenly but rather drift slowly and continuously call
+for a very different family of strategies.  So while our model describes
+behavior well in _this_ particular experimental environment, that does not
+necessarily mean that it would also describe behavior well in an environment
+that does not follow the structural assumptions that the model makes.
+
+# Conclusion
+
+In a structured world, local context---either simultaneous or temporally
+extended---can provide a great deal of information about how to interpret or
+remember stimuli.  We have proposed a Bayesian model that infers latent context
+variables from unlabeled data, and uses that context to encode and retrieve
+information from memory.  This model processes data _online_, one observation at
+a time, and captures people's behavior in a multi-context spatial memory task.
+
+# Acknowledgments
+
+This work was supported by a National Science Foundation Grant 1453276 awarded
+to Pernille Hemmer.

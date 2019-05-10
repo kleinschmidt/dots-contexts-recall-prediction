@@ -73,8 +73,10 @@ expts = experiments((recall_bysub, pred_bysub),
                     n = [100],
                     Sσ = [0.01, 0.1, 1.0].^2,
                     batch = [batch],
-                    iter = [1:10;])
+                    iter = [1:20;])
 
 
 results = pmap(expts) do ex run(recall_predict, ex) end
-@save "../results/$batch-$(DateTime(now())).jld2" expts results recall_predict, typeof(recall_predict)
+# get rid of all the metadata from the results
+results = getproperty.(results, :result)
+@save "../results/$batch-$(DateTime(now())).jld2" expts results

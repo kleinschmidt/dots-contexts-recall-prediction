@@ -40,3 +40,24 @@
    could look at cosine similarity between displacement vectors.  or even dot
    product, normalized by the length of one of the vectors (to get a measure of
    the mismatch in size _and_ direction)
+* Better model metrics
+** Likelihood of recalled location
+   Is this really so bad?  I think I used an approximation to get the _expected_
+   recall location, since you can't do the cue-combination analytically AND
+   integrate over the cluster-level parameters (since you get a t distribution
+   at the end, not a normal...)
+
+   Could be done fairly easy by sampling from the posterior for the cluster
+   mean/variance, then doing cue combo, and computing likelihood under that, and
+   averaging.  That might require a lot of samples though which would get pretty
+   expensive
+* Control models
+** No memory for previous clusters (just detect change)
+   This is like alpha -> infinity
+** CRP (no stickiness)
+   stickiness -> 0
+** Continuous change (moving window)
+   Idea is that you're just doing a moving window/context drift sort of model,
+   instead of looking for _changes_.
+** local MAP baseline
+   I think this might fail because of the uncertainty?  But maybe not.

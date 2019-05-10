@@ -1,0 +1,73 @@
+* Drafting paper
+   
+** DONE introduction
+   What's already been done in this space?  Ting's stuff on stimulus
+   order/bundles.  Memory influenced by structure in the environment
+   (correlations between features).  Memory influenced by statistics of context
+   (Huttenlocher).
+
+   Who was the Gershman student I talked to at mathpsych??  Nicholas Franklin.
+   There's some stuff they're doing on "learning to learn" in multi-armed
+   bandits where there's structure in how rewards shift over time.  they're
+   squarely in the reinforcement learning space here.
+
+   and sarah dubrow is working on similar stuff about multi-context memory
+   right???  event boundaries in episodic memory... (drift or shift, @Dubrow2017)
+
+   and speech perception (although no explicit model of the kind we're proposing
+   here...may be better to mention this in the discussion/conclusion)
+   
+   I think the thing to focus on is that 1) contex provides important
+   information in a wide variety of tasks but 2) it's really hard to find this
+   structure because the search space is large and (especially over time) it's
+   hard-to-impossible to re-evaluate information from the past...once it's gone
+   it's gone (at least up to what you managed to encode)
+** DONE experiment methods
+** DONE prediction results
+
+   prediction is a more explicit test of what subjects believe the structure of
+   the task to be...
+
+*** DONE example trials
+*** DONE average and by-trial deviation
+
+** TODO discussion/conclusion
+
+*** What did we find?
+**** it works
+     sequential monte carlo approximation of non-parametric clustering captures
+     subjects' recall and prediction in a multi-context environment.
+**** high stickiness, low concentration
+     people behave like they expect contexts to stick around.  suggests that
+     people either expect or infer that contexts/clusters last for a while.  and
+     that they're likely to re-encounter previous contexts
+*** What are the limitations/caveats
+**** shortcomings of model/approach
+***** hard to do proper model comparison without likelihood model
+      TODO: develop and evaluate likelihood model for both recall and prediction,
+      for our model and the baselines.
+***** online vs. batch algorithms
+      possible that people are actually doing something MORE like the standard,
+      offline batch algorithm here [@Qian2014].  Recall that part of the reason
+      we chose the SMC algorithm is that it's methodologically easier for the
+      task we're modeling, but perhaps people are doing something more clever
+      that better approximates the optimal solution than our algorithm is capable of.
+**** questions for future research
+***** no inference of cluster prior, DP concentration, stickiness
+      Treated them as free parameters.  In principle, could also update beliefs
+      about the distribution of clusters themselves, the concentration parameter,
+      and the stickiness in the current environment.  
+      Raises question: if people have to infer these sorts of parameters, how do
+      they do that?  Do you look for discrete changes in them or do you track
+      _continuous_ changes/drift?
+      Need to look at how these parameters vary across datasets/domains.  Ongoing
+      work to apply same model to similar tasks where there is no structure, and
+      variations on the particular kind of structure we explored here.
+***** are people really revisiting clusters??
+      Need to run with changepoint model to see... and collect more data that's
+      designed to more clearly test for memory for previous clusters.
+
+
+*** other domains 
+**** speech perception
+
