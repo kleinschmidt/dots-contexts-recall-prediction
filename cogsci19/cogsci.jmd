@@ -135,7 +135,7 @@ _context_ an item occurred in as an additional source of information [e.g.,
 view, so-called "false recall" is really a reflection of the mis-match between
 the _experimenter's_ defined context and the _subject's_ inferred context.
 
-However, this begs the question of what _is_ a context, and how do people know?
+However, this raises the question of what _is_ a context, and how do people know?
 For instance, @Huttenlocher1991 found that immediate spatial recall of a
 location in a circular area is biased towards the average radius of all
 locations in the experiment.  They proposed that memory for an individual item's
@@ -240,7 +240,7 @@ $$p(z_i=j | x_{1:i}, z_{1:i-1}) \propto p(x_i | z_i=j, z_{1:i-1}, x_{1:i-1})
 p(z_i=j | z_{1:i-1}) $$
 
 The sequential prior $p(z_i=j | z_{1:i-1})$ is a "Hibachi Grill Process"
-[@Qian2014], which is like the standard Chinese Restaurant Process (CRP) with an
+[@Qian2014; @Fox2011], which is like the standard Chinese Restaurant Process (CRP) with an
 added (constant) probability assigned to the previous state.  This corresponds
 to the following generative model: with probability $0 < \rho < 1$ the previous
 state is picked, $j=z_{i-1}$, and with probability $1-\rho$ a component is
@@ -519,7 +519,7 @@ models we compare against also do not have straightforward likelihood models,
 but they _do_ make straightforward predictions about the directions of recall
 deviations.
 
-```{julia; label="cosinesim-by-param"; fig_cap="Mean cosine-similarity of model predicted and actual recall deviations across parameter values.  Gray lines show baselines: always deviate toward center, average radius, and center of true clusters"}
+```{julia; label="cosinesim-by-param"; fig_cap="Mean cosine-similarity of model predicted and actual recall deviations across parameter values (ribbons show 95% bootstrapped CIs over model runs).  Gray lines show baselines: always deviate toward center, average radius, and center of true clusters"}
 
 @df(@where(recalled_summaries, :Sσ .≈ 0.01),
     plot(:α, :cos, ribbon = (:cos .- :cos_low, :cos_high .- :cos), group=:ρ, xscale=:log10, 
@@ -556,18 +556,20 @@ summaries_by_subj_cis = by(summaries_by_subj,
                            [:α, :ρ, :Sσ],
                            :cos => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
 
-@_ summaries_by_subj_cis |>
-    @where(_, :Sσ .≈ 0.01) |>
-    @df plot(:α, :mean, ribbon = (:mean .- :low, :mean .- :high), group=:ρ, xscale=:log10)
+# @_ summaries_by_subj_cis |>
+#     @where(_, :Sσ .≈ 0.01) |>
+#     @df plot(:α, :mean, ribbon = (:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10)
 
 ```
 
 Figure -@fig:cosinesim-by-param shows the cosine similarity with of all
-subjects' responses with the multi-context Bayesian model.  At all parameter
-settings, the model performs better than chance, predicting subjects' recall
-deviation directions at a cosine similarity of around $0.1$ (relative to a
-chance level of 0).  The model performs best for high $\rho$ stickiness and low
-$\alpha$ concentration.
+subjects' responses with the multi-context Bayesian model.  The ribbons show the
+95% bootstrapped confidence intervals over model runs, which indicate that the
+approximate inference strategy leads to reasonably consistent inferences for a
+given set of parameters.  At all parameter settings, the model performs better
+than chance, predicting subjects' recall deviation directions at a cosine
+similarity of around $0.1$ (relative to a chance level of 0).  The model
+performs best for high $\rho$ stickiness and low $\alpha$ concentration.
 
 We also compare the model's performance against three baselines.  First, we
 compare it against a "known clusters" model, which uses the true (experimenter
@@ -587,7 +589,14 @@ metric, our context-inference model better captures how people combine
 information about the current context during recall than the "ground truth"
 clusters.
 
-
+However, an important caveat is that there is substantial variability across
+_subjects_.  The cosine similarity for $\alpha = 0.01, \rho = 0.9$ has a 95%
+boostrapped CI across subjects of $[0.05, 0.17]$, which while significantly
+better than chance is not significantly better than the baseline models, even
+when taking into account the substantial variability in the cosine similarity
+for the baseline models themselves.  With only 8 subjects in this dataset it is
+unclear how well the model's performance will generalize to other datasets, and
+future work with better-powered designs is required.
 
 ## Prediction
 
