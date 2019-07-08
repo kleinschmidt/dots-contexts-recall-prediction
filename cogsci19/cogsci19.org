@@ -70,4 +70,20 @@
 
 *** other domains 
 **** speech perception
+* Poster
+** paradigm
+   One thing to emphasize: there is one cluster that is returned to many times,
+   and a number of other clusters that are only seen once.
+** Results
+*** Inferred clusters
+    Want to show at least one example of inferred clusters.  Maybe a few,
+    varying the parameters...
+*** consistency of approximation
+    One question: how consistent is this approximation?  Does the finite
+    populatio of particles lead to randomness in teh goodness of fit?  Not really
+    (that's what the figure in the paper shows).  So...the model behaves pretty
+    consistently.
+*** consistency across subjects
+    Another question: how consistently does the model fit behavior over subjects?
+    The answer is not very...some people are great, others are terrible. /shrug
 
