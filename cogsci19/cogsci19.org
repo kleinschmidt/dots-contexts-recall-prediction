@@ -31,7 +31,7 @@
 *** DONE example trials
 *** DONE average and by-trial deviation
 
-** TODO discussion/conclusion
+** DONE discussion/conclusion
 
 *** What did we find?
 **** it works
@@ -70,10 +70,129 @@
 
 *** other domains 
 **** speech perception
+* Cogsci reviews
+** likelihood model
+   A few reviewers noted that it should be possible to compute the likelihood of
+   the responses.  That's not as straightforward as it seems since there's an
+   approximation that's used to do the cue combination (using just the
+   *expected* covariance matrix).  The problem is that it's easy to do the cue
+   combination with normal likelihood and normal prior, but we have a *t
+   distributed* prior, meaning that while it's easy to compute the un-normalized
+   posterior probability of the recalled point, there's no analytical solution
+   to the normalization constant and hence the actual probability isn't known
+   and you can't use this un-normalized probability to compare models (or
+   average across particles even!).
+
+   So you need to do some kind of approximation.  The one I've been using
+   pretends the prior is normal, with the _expected_ covariance matrix.  There
+   are othero possibilties though.  One family of approximations just
+   approximates the normalizing term (either by monte-carlo
+   integration/importance sampling, or by quadrature).  Then you just have to
+   calculate the un-normalized probability and divide by the normalizing term.
+   But I don't have good intuitions about how accurate this would be.  I did a
+   bit of reading about quadrature techniques: it's pretty straightforward to
+   get quadrature points/weights for multivatiate normal kernel (Gauss-Hermite),
+   and then you just have to evaluate the prior at each of these points and take
+   a weighted sum.  But I think one potential issue with this is that the
+   posterior has most of its mass *between* the likelihood and prior, not
+   centered on the prior...so I'm a little suspicious of how good this
+   approximation will be since it's basically using points that are centered
+   around the likelihood...  Something like importance sampling using teh normal
+   approximation might be better but that's going to be pretty stochastic.  Then
+   again, it's possible that the short tails of the normal distribution are
+   going to really dominate the likelihood since the t has much fatter
+   tails...and since the memory noise doesn't change (at least within a run) you
+   only have to calculate the quadrature points ONCE and then just evaluate the
+   t probability a few times.  So that's pretty nice.  
+
+   Another issue is that we'd want to do this for a range of memory noise
+   levels, and that (ideally) shouldn't require running the clustering model all
+   over again.  So it might be good to factor that out (shouldn't be too hard,
+   since there's already a separate structure that handles the recall part,
+   ~RecallFilter~).
+
+   Also related is that we want to be able to handle outliers (of which there
+   are certainly plenty).  So would need to smooth the likelihood with some
+   small constant probability over the whole arena, which you'd want to treat as
+   a free parameter...
+
+** quantifying cluster recovery
+   R1 suggests Adjusted Rand Index which should be pretty straightforward to
+   compute using Clustering.jl (and I /think/ is reasonable to do a weighted
+   average over particles...)
+
+** range of parameters considered/alternative models
+   looks like alpha could go lower.  in the limit as α→0 you get a single
+   cluster.  and as α→∞ you get n clusters (one per data point) so NO context
+   effect, just ranodm noise around the studied point.
+
+   also could consider models that don't come back to previously studied
+   clusters (easy to do with the state prior).
+
+   I think some of this could replace the somewhat ad-hoc control models.
 * Poster
+** what is the spiel
+   Short version: memory, decisions, percpetion, all happen in context, and
+   context is a potentially rich source of information.  This kind of begs the
+   question though of what *is* a context, and how do people know.  Here we've
+   developed a model of how people can detect un-cued changes in context in a
+   spatial recall task, and want to see if it provides a good account of their
+   behavior.  The task works like this: see a dot, mask, then immediately recall
+   the location with a click.  The dots are drawn from clusters, and the cluster
+   changes every few trials.  These clusters have different spatial extents,
+   durations, etc.; the only cluster that's revisted many times is the little
+   one in the center.  The way the model works is that there are a bunch of
+   "particles", each of which is a different hypothesis about how to cluster the
+   data points its seen so far.  When a new data point comes in, each particle
+   assigns it to a cluster based on a combination of the prior probability of
+   that cluster and the likelihood of the new observation given teh other
+   observations already assigned to that cluster.  These clusters then serve as
+   the context for the recall task, and the cluster serves as a prior which is
+   combined with a noisy memory trace via Bayesian cue combination.
+
+   The basic finding is that the model largely succeeds at recovering the
+   context changes, and it figures out that this central cluster is returned to
+   over and over again.  What's interesting is that it doesn't _always_ agree
+   with the experimenter defined clusters, but the disagreements are all
+   reasonable: clusters that are highly similar are sometimes grouped together,
+   and clusters that are really spread out are sometimes split
+
+   The results for the recall part are more mixed.  On the one hand, the model's
+   predictions about the directions that recall is biased in align with
+   subjects' deviations more than you'd expect by chance.  On the other hand,
+   there's a LOT of variability in how well the model captures different
+   subjects behavior, and with a small sample size it's not clear that we're
+   doing better than some reasonable baseline models.  One thing that IS
+   encouraging is that the model is fairly consistent across repeat runs, which
+   means that the approximate inference algorithm is working pretty well.
+
+   prediction is better: captures that when asked to predict further in the
+   future, people predict points farther away.  Captures the *average* effect as
+   well as variaton *within* each prediction horizon.
 ** paradigm
    One thing to emphasize: there is one cluster that is returned to many times,
    and a number of other clusters that are only seen once.
+** model
+*** clustering model
+    "sticky" CRP/Hibachi Grill Process: prior on cluster index is CPR with some
+    constant probability held out for staying in previous cluster.
+**** TODO evaluation
+     How successful is the model at recovering clusters?  How does it depend on
+     the parameters?
+*** particle filter algorithm
+    Each particle is a hypothesis about the cluster assignments of all
+    observations so far.  Updated in parallel and re-sampled to keep a good mix
+    of hypotheses.  Conjugate prior on the cluster mean/covariance, updated
+    based on sufficient statistics
+*** recall model
+    Bayesian "cue combination" model: noisy memory trace with context prior.
+    Context prior is a normal with expected mean/covariance.
+**** Evaluation
+     cosine similarity between predicted and actual recall deviation (less
+     sensitive to outliers, and less dependent on free parameters like noise
+     variance than directly calculating likelihood of recalled data)
+*** prediction
+    Simulate forward and draw a predicted location.
 ** Results
 *** Inferred clusters
     Want to show at least one example of inferred clusters.  Maybe a few,
