@@ -54,7 +54,7 @@ using
 using 
     Plots,
     PlotThemes,
-    StatPlots,
+    StatsPlots,
     RecipesBase,
     Colors, 
     Images,
@@ -74,11 +74,11 @@ flip(x::AbstractVector) = reshape(x, (1,:))
 
 const It = Base.Iterators
 
-Revise.track("../modeling.jl")
+includet("../modeling.jl")
 using .DotLearning
-Revise.track("../experiments.jl")
+includet("../experiments.jl")
 using .Experiments
-include("../plots.jl")
+includet("../plots.jl")
 
 using JLD2
 @load "../data/dots2014.jld2" recall pred
