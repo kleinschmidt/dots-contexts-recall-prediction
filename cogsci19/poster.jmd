@@ -20,6 +20,9 @@ using DataFrames,
 
 ari_summaries = by(results_df, [:α, :ρ], :ari => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
 
-@df ari_summaries plot(:α, :mean, ribbon=(:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10)
+ari_bysub = by(results_df, [:α, :ρ, :subjid1], ari = :ari => mean)
+ari_summaries_bysub = by(ari_bysub, [:α, :ρ], :ari => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
+
+@df ari_summaries_bysub plot(:α, :mean, ribbon=(:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10)
 
 ```
