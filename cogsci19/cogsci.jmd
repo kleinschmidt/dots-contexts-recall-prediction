@@ -239,7 +239,7 @@ $$p(z_i=j | x_{1:i}, z_{1:i-1}) \propto p(x_i | z_i=j, z_{1:i-1}, x_{1:i-1})
 p(z_i=j | z_{1:i-1}) $$
 
 The sequential prior $p(z_i=j | z_{1:i-1})$ is a "Hibachi Grill Process"
-[@Qian2014; @Fox2011], which is like the standard Chinese Restaurant Process (CRP) with an
+[@Qian2014; @Fox2011b], which is like the standard Chinese Restaurant Process (CRP) with an
 added (constant) probability assigned to the previous state.  This corresponds
 to the following generative model: with probability $0 < \rho < 1$ the previous
 state is picked, $j=z_{i-1}$, and with probability $1-\rho$ a component is
