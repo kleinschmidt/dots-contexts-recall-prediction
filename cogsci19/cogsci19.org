@@ -194,15 +194,30 @@
 *** prediction
     Simulate forward and draw a predicted location.
 ** Results
+*** Behavioral data
+    Show that recall is biased towards cluster centers (there is a figure from
+    the math-psych slides that shows this I think...)
 *** Inferred clusters
-    Want to show at least one example of inferred clusters.  Maybe a few,
-    varying the parameters...
-*** consistency of approximation
-    One question: how consistent is this approximation?  Does the finite
-    populatio of particles lead to randomness in teh goodness of fit?  Not really
-    (that's what the figure in the paper shows).  So...the model behaves pretty
-    consistently.
-*** consistency across subjects
-    Another question: how consistently does the model fit behavior over subjects?
-    The answer is not very...some people are great, others are terrible. /shrug
-
+**** TODO qualitative
+     Want to show at least one example of inferred clusters.  Maybe a few,
+     varying the parameters...
+**** TODO quantitative (measure of cluster agreement/disagreement)
+     Adjusted Rand Index??  This would take a BIT of doing but not too
+     much...just have to extend the Clustering.jl methods for ... count I think?
+*** recall
+**** TODO better chance level baseline
+     Can use a permutation test to do this: shuffle the deviations across
+     trials.  Can do that for all the measures actually...
+**** consistency of approximation
+     One question: how consistent is this approximation?  Does the finite
+     populatio of particles lead to randomness in teh goodness of fit?  Not really
+     (that's what the figure in the paper shows).  So...the model behaves pretty
+     consistently.
+**** consistency across subjects
+     Another question: how consistently does the model fit behavior over subjects?
+     The answer is not very...some people are great, others are terrible. /shrug
+*** prediction
+**** Qualitative
+     Show "arena" plots to illustrate long vs. short predictions
+**** Quantitative
+     Scatter plot of distance from last studied point.
