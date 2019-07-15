@@ -1,0 +1,25 @@
+```julia
+
+using DataFrames,
+    DataFramesMeta,
+    Bootstrap,
+    Plots,
+    StatsPlots
+
+```
+
+# Results
+
+## Recovering clusters
+
+### Adjusted Rand Index
+
+```julia
+
+@load "../results/randindex-2019-07-15T16:17:46.864.jld2" results_df
+
+ari_summaries = by(results_df, [:α, :ρ], :ari => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
+
+@df ari_summaries plot(:α, :mean, ribbon=(:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10)
+
+```
