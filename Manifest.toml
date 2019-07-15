@@ -416,22 +416,15 @@ uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.20.0"
 
 [[JuliennedArrays]]
-deps = ["Keys"]
-git-tree-sha1 = "b548d10a956c1008ae69af6780d62c86662cdd0a"
+git-tree-sha1 = "6a609bbcdbe34eea81bcf831118842ce3c6be38c"
 uuid = "5cadff95-7770-533d-a838-a1bf817ee6e0"
-version = "0.1.0"
+version = "0.0.3"
 
 [[KernelDensity]]
 deps = ["Distributions", "FFTW", "Interpolations", "Optim", "StatsBase", "Test"]
 git-tree-sha1 = "c1048817fe5711f699abc8fabd47b1ac6ba4db04"
 uuid = "5ab0869b-81aa-558d-bb23-cbf5423bbe9b"
 version = "0.5.1"
-
-[[Keys]]
-deps = ["MacroTools", "Test"]
-git-tree-sha1 = "913bf63ac3cfa299da7917846ca78c9e66bf323e"
-uuid = "25c06242-cc58-593c-a204-a17bebfb33b5"
-version = "0.5.0"
 
 [[LibGit2]]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
@@ -550,8 +543,10 @@ version = "0.10.3"
 
 [[Particles]]
 deps = ["ConjugatePriors", "Distances", "Distributions", "LinearAlgebra", "ProgressMeter", "Random", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns"]
-path = "/home/dave/.julia/dev/Particles"
-uuid = "ac9dd01a-757f-5730-a52a-02349aa05ab3"
+git-tree-sha1 = "99e761229df0d5405bffa0ad596368dafe153f1d"
+repo-rev = "master"
+repo-url = "https://github.com/kleinschmidt/Particles.jl.git"
+uuid = "2ebe8b25-25be-5fc1-b6bc-48c775df5563"
 version = "0.1.1"
 
 [[Pkg]]
@@ -799,7 +794,7 @@ version = "0.5.8"
 
 [[Weave]]
 deps = ["Base64", "Compat", "Dates", "Highlights", "JSON", "Markdown", "Mustache", "Printf", "REPL", "Requires", "Serialization", "YAML"]
-path = "/home/dave/.julia/dev/Weave"
+git-tree-sha1 = "a1698569cb25ddefb4bf538f39e77afdc7aa720e"
 uuid = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 version = "0.9.1"
 
