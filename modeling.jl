@@ -11,7 +11,6 @@ using
     Particles,
     Distributions,
     ConjugatePriors,
-    JuliennedArrays,
     StatsBase,
     LinearAlgebra
 
@@ -84,7 +83,7 @@ end
 
 # data needs to have columns :x and :y
 extract_data(d::AbstractDataFrame, ps::ParticleFilter) =
-    map(vec, julienne(hcat(d[:x], d[:y]), (*,:)))
+    collect(map(collect, eachslice(hcat(d[:x], d[:y]), dims=1)))
 
 DataFrames.DataFrame(rf::RecallFilter) =
     DataFrame(x_mod = first.(rf.recalled),

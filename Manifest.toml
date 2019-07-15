@@ -415,11 +415,6 @@ git-tree-sha1 = "1f7a25b53ec67f5e9422f1f551ee216503f4a0fa"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.20.0"
 
-[[JuliennedArrays]]
-git-tree-sha1 = "6a609bbcdbe34eea81bcf831118842ce3c6be38c"
-uuid = "5cadff95-7770-533d-a838-a1bf817ee6e0"
-version = "0.0.3"
-
 [[KernelDensity]]
 deps = ["Distributions", "FFTW", "Interpolations", "Optim", "StatsBase", "Test"]
 git-tree-sha1 = "c1048817fe5711f699abc8fabd47b1ac6ba4db04"

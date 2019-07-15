@@ -65,7 +65,6 @@ using
     ConjugatePriors,
     Particles,
     Distances, 
-    JuliennedArrays,
     Bootstrap
 
 theme(:default, markerstrokecolor=:white)
