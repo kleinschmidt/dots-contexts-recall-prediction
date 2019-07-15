@@ -7,7 +7,10 @@ batch = :randindex
 @everywhere begin
     using Pkg
     Pkg.activate("..")
+    Pkg.status()
+end
 
+@everywhere begin
     using DataFrames,
         DataFramesMeta,
         Underscore,
@@ -19,6 +22,9 @@ batch = :randindex
 
     include("../modeling.jl")
     include("../experiments.jl")
+end
+
+@everywhere begin 
     using .Experiments
     using .DotLearning
     
