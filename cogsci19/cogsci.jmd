@@ -369,11 +369,20 @@ is available from [osf.io/dqz73/](https://osf.io/dqz73/)
 
 Random.seed!(2019)
 
-rf = RecallFilter(ChenLiuParticles(100,
-                                     prior_optimized,
-                                     StickyCRP(0.01, 0.9)),
-                  Matrix(0.01I,2,2))
-filter!(rf, extract_data(recall1, rf))
+rf_cl = RecallFilter(ChenLiuParticles(100,
+                                      prior_optimized,
+                                      StickyCRP(0.01, 0.9)),
+                     Matrix(0.01I,2,2))
+rf_fh = RecallFilter(FearnheadParticles(100,
+                                        prior_optimized,
+                                        StickyCRP(0.01, 0.9)),
+                     Matrix(0.01I,2,2))
+
+filter!(rf_cl, extract_data(recall1, rf_cl))
+filter!(rf_fh, extract_data(recall1, rf_fh))
+
+rf = rf_fh
+
 ```
 
 ## Clustering
@@ -381,6 +390,8 @@ filter!(rf, extract_data(recall1, rf))
 ```{julia; label="assign-mats"; fig_cap="Cluster assignment similarity matrix for clusters inferred by one population of particles from subject 4's studied locations (left), with the true (experimenter-defined) blocks outlined in colors (see Figure -@fig:stimuli).  The similarity matrix based on the Euclidean distance between each location is shown for comparison (right) and to show that the model groups some similar locations into the same cluster even though they are from different blocks."}
 
 filter_sim = assignment_similarity(rf)
+filter_sim_cl = assignment_similarity(rf_cl)
+
 
 # outline the boundaries of the blocks in ~colors~
 function outline_blocks(sim_mat, blocks, block_pallete)
@@ -403,6 +414,15 @@ euc_dist = @_ recall1 |>
     @with(_, hcat(:x, :y)) |>
     Distances.pairwise(Euclidean(), _')
 
+# plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
+#           title="Inferred clusters (FC)", guide="Trial"),
+#      plot(outline_blocks(filter_sim_cl, recall1[:block], block_pallete),
+#           title="Inferred clusters (CL)", guide="Trial"),
+#      plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),
+#                          recall1[:block],
+#                          block_pallete),
+#           title="Euclidean distance"),
+#      aspect_ratio=:equal, layout=(1,3), size=(900,300))
 plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
           title="Inferred clusters", guide="Trial"),
      plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),
