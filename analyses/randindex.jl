@@ -23,6 +23,7 @@ batch = :randindex
     using .DotLearning
     
     function ari(params::Dict, data)
+        println("α=$(params[:α]), ρ=$(params[:ρ]), iter=$(params[:iter])")
         ps_factory = () -> FearnheadParticles(params[:n],
                                               params[:prior],
                                               StickyCRP(params[:α], params[:ρ]))
