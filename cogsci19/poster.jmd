@@ -1,16 +1,165 @@
 ```julia
 
-using DataFrames,
-    DataFramesMeta,
-    Bootstrap,
+using Revise
+
+using Weave
+Weave.set_chunk_defaults(Dict{Symbol,Any}(
+    :results => "hidden",
+    :echo => false
+))
+
+using 
+    LinearAlgebra, 
+    Random,
+    Statistics
+
+using 
     Plots,
-    StatsPlots
+    PlotThemes,
+    StatsPlots,
+    RecipesBase,
+    Colors, 
+    Images,
+    DataFrames,
+    DataFramesMeta,
+    Underscore,
+    StatsBase,
+    ConjugatePriors,
+    Particles,
+    Distances, 
+    Bootstrap
+
+theme(:default, markerstrokecolor=:white)
+
+flip(x::AbstractVector) = reshape(x, (1,:))
+
+const It = Base.Iterators
+
+includet("../modeling.jl")
+using .DotLearning
+includet("../experiments.jl")
+using .Experiments
+includet("../plots.jl")
+
+using JLD2
+@load "../data/dots2014.jld2" recall pred
+# recall data from one subject
+one_subj = 4
+recall1 = @where(recall, :subjid1 .== one_subj)
+
+# load the prior _parameters_ to get around
+@load "../prior_empirical_params.jld2"
+prior_optimized = ConjugatePriors.NormalInverseWishart(μ, κ, Λ, ν)
+import .Experiments: cosinesim
+cosinesim(d) = cosinesim(d,d)
+
+rho(args...) = sqrt(sum(args.^2))
+
+boot_ci(x, f=mean, n=1000, cil=0.95) = confint(bootstrap(f, x, BasicSampling(n)),
+                                               BasicConfInt(cil))
 
 ```
+
+
+# Task
+
+```julia
+
+nblock = length(unique(recall1[:block]))
+
+block_pallete = LCHab.(60, 60, range(0, 320, length=nblock))
+
+p1 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
+          axis=false, grid=false, legend=false,
+          title="Studied locations")
+@df recall1 scatter!(p1, :theta, :rho, color=:black, markeralpha=0.5)
+
+p2 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
+          palette = block_pallete, axis=false, grid=false,
+          title="Colored by block")
+@_ recall1 |>
+    by(_, [:block], :theta=>mean, :rho=>mean) |>
+    @df(_, plot!(p2, :theta_mean, :rho_mean, color=GrayA(0.5, 0.2)))
+@_ recall1 |>
+    by(_, [:block], :theta=>mean, :rho=>mean) |>
+    @df(_, scatter!(p2, :theta_mean, :rho_mean, group=:block,
+                    c=(1:nblock)',
+                    markersize=8, markeralpha=0.2))
+@df recall1 scatter!(p2, :theta, :rho, group=:block, proj=^(:polar),
+                        palette = block_pallete, legend=false)
+
+plot(p1, p2, size=(850, 400))
+
+```
+
+# Behavioral data
 
 # Results
 
 ## Recovering clusters
+
+### Example
+
+```julia
+Random.seed!(2019)
+
+rf_cl = RecallFilter(ChenLiuParticles(100,
+                                      prior_optimized,
+                                      StickyCRP(0.01, 0.9)),
+                     Matrix(0.01I,2,2))
+rf_fh = RecallFilter(FearnheadParticles(100,
+                                        prior_optimized,
+                                        StickyCRP(0.01, 0.9)),
+                     Matrix(0.01I,2,2))
+
+filter!(rf_cl, extract_data(recall1, rf_cl))
+filter!(rf_fh, extract_data(recall1, rf_fh))
+
+rf = rf_fh
+
+filter_sim = assignment_similarity(rf)
+filter_sim_cl = assignment_similarity(rf_cl)
+
+# outline the boundaries of the blocks in ~colors~
+function outline_blocks(sim_mat, blocks, block_pallete)
+    block_colors = RGB.(Gray.(sim_mat))
+    nblock = length(unique(blocks))
+    for n in 1:nblock
+        start = findfirst(isequal(n), blocks)
+        stop = findlast(isequal(n), blocks)
+        color = block_pallete[n]
+        block = view(block_colors, start:stop, start:stop)
+        block[1:end, 1] .= color
+        block[1:end, end] .= color
+        block[1, 1:end] .= color
+        block[end, 1:end] .= color
+    end
+    return block_colors
+end
+
+euc_dist = @_ recall1 |>
+    @with(_, hcat(:x, :y)) |>
+    Distances.pairwise(Euclidean(), _')
+
+# plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
+#           title="Inferred clusters (FC)", guide="Trial"),
+#      plot(outline_blocks(filter_sim_cl, recall1[:block], block_pallete),
+#           title="Inferred clusters (CL)", guide="Trial"),
+#      plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),
+#                          recall1[:block],
+#                          block_pallete),
+#           title="Euclidean distance"),
+#      aspect_ratio=:equal, layout=(1,3), size=(900,300))
+plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
+          title="Inferred clusters", guide="Trial"),
+     plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),
+                         recall1[:block],
+                         block_pallete),
+          title="Euclidean distance"),
+     aspect_ratio=:equal, layout=(1,2), size=(600,300))
+
+
+```
 
 ### Adjusted Rand Index
 
@@ -24,5 +173,26 @@ ari_bysub = by(results_df, [:α, :ρ, :subjid1], ari = :ari => mean)
 ari_summaries_bysub = by(ari_bysub, [:α, :ρ], :ari => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
 
 @df ari_summaries_bysub plot(:α, :mean, ribbon=(:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10)
+
+```
+
+## Recall
+
+```julia
+
+@load "../results/run3-2019-01-07T21:23:16.243-recalled-predicted.jld2" recalled_all predicted_all
+
+summaries_by_iter = by(recalled_all, [:α, :ρ, :Sσ, :iter]) do d
+    DataFrame(cos=cosinesim(d), mse=Experiments.mse(d,d))
+end
+
+recalled_summaries = by(summaries_by_iter, [:α, :ρ, :Sσ]) do d
+    # collect only necessary here because of Bootstrap.jl#42, can remove once
+    # #43 is merged
+    (c, clow, chigh), = boot_ci(collect(d[:cos]))
+    (m, mlow, mhigh), = boot_ci(collect(d[:mse]))
+    DataFrame(cos=c, cos_low=clow, cos_high=chigh,
+              mse=m, mse_low=mlow, mse_high=mhigh)
+end
 
 ```
