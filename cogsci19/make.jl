@@ -12,14 +12,15 @@ function make_paper()
                           "--template", "latexpaper/cogsci_template.tex",
                           "--biblatex", "--pdf-engine=pdflatex"],
           mod=Main)
-    run(`make`)
+    run(`make cogsci.pdf`)
 end
 
 
 function make_poster()
     weave("poster.jmd",
-          doctype="html",
+          doctype="pandoc",
           fig_ext=".svg",
           pandoc_options=["--filter", "pandoc-crossref"],
           mod=Main)
+    run(`make poster.html`)
 end
