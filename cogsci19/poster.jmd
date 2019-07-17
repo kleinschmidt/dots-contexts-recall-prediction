@@ -250,3 +250,135 @@ recalled_summaries = by(summaries_by_iter, [:α, :ρ, :Sσ]) do d
 end
 
 ```
+
+```{julia; label="recall-results"}
+
+rec_params_good = @_ recalled_summaries |>
+    @where(_, :Sσ .≈ 0.01) |>
+    sort!(_, :cos, rev=true) |> 
+    first(_, 1) 
+
+# average over iterations
+recalled_good = @_ rec_params_good |>
+    join(recalled_all, _, on=[:α, :ρ, :Sσ]) |>
+    @by(_, [:subjid1, :block, :rep, :rep_number, :respnr, :rad, :var, :x, :y, :x_resp, :y_resp],
+        x_mod = mean(:x_mod), y_mod = mean(:y_mod)) 
+
+recalled1 = @_ recalled_good |>
+    @where(_, :subjid1 .== one_subj)
+
+# baselines
+baseline!(df) = @_ df |>
+    @transform(_, gt_rho_avg = rho.(:x,:y) .> mean(rho.(:x, :y))) |>
+    # @with(_, (hcat(:x,:y) .* ifelse.(:gt_rho_avg, -1, 1))')
+    @transform(_, cos_center = 1 .- Distances.colwise(CosineDist(),
+                                                      -hcat(:x, :y)', 
+                                                      hcat(:x_resp.-:x, :y_resp.-:y)'),
+                  cos_mean_rho = 1 .- Distances.colwise(CosineDist(),
+                                                        (hcat(:x,:y) .* ifelse.(:gt_rho_avg, -1, 1))',
+                                                        hcat(:x_resp.-:x, :y_resp.-:y)'),
+                  cos_mod = 1 .- Distances.colwise(CosineDist(),
+                                                   hcat(:x_mod.-:x, :y_mod.-:y)',
+                                                   hcat(:x_resp.-:x, :y_resp.-:y)'))
+
+baseline_good = baseline!(recalled_good)
+bs_center, bs_avgrho = @_ baseline_good |>
+    @where(_, (!isnan).(:cos_center)) |>    # there is one trial with zero deviation...
+    @with(_, (mean(:cos_center), mean(:cos_mean_rho)))
+
+# baseline: chance responding throughout the arena:
+function discuniform(n)
+    θs = rand(n)' .* 2π
+    ρs = sqrt.(rand(n)')
+    vcat(cos.(θs) .* ρs,
+         sin.(θs) .* ρs)
+end
+
+cos_rand = let xy = hcat(recall.x, recall.y)', xyresp = hcat(recall.x_resp, recall.y_resp)'
+    [mean(1 .- Distances.colwise(CosineDist(),
+                                 discuniform(size(xy, 2)) .- xy,
+                                 xyresp .- xy))
+     for _ in 1:1000]
+end
+
+```
+
+### Example
+
+```{julia; label="example-subj-recall"; fig_cap="Subject 4's recalled locations (gray arrows, pointing from studied to recalled location) compared with model simulation (blue arrows; \$\\alpha=0.01, \\rho=0.9, \\sigma_x=0.1\$)"}
+@df recalled1 arena(:x, :y, quiver=(:x_mod .- :x, :y_mod .- :y),
+                    seriestype=:quiver, label="Model")
+@df recalled1 quiver!(:x, :y, quiver=(:x_resp .- :x, :y_resp .- :y),
+                      color=GrayA(0.0, 0.5), label="Behavior")
+```
+
+### Quantified
+
+```{julia; label="cosinesim-by-param"; fig_cap="Mean cosine-similarity of model predicted and actual recall deviations across parameter values (ribbons show 95% bootstrapped CIs over model runs).  Gray lines show baselines: always deviate toward center, average radius, and center of true clusters"}
+
+@df(@where(recalled_summaries, :Sσ .≈ 0.01),
+    plot(:α, :cos, ribbon = (:cos .- :cos_low, :cos_high .- :cos), group=:ρ, xscale=:log10, 
+         xlims=(10^-2.5, 10^1.5), ylims=(0, 0.12), seriestype=:line,
+         xlabel="Eagerness to create new clusters (concentration \\alpha)",
+         ylabel=("Cosine sim. with behavior"),
+         legend=:bottomleft, legend_title="Stickiness \\rho", line=2))
+
+baseline_x = [10^-2.1, 10^1.1]
+
+function plot_baseline!(y, label)
+    plot!(baseline_x, ones(2)*y, color=Gray(0.7), label="")
+    annotate!(baseline_x[end]*1.05, y, label)
+end
+
+plot_baseline!(cosinesim(known_recalled),
+               text("Known\nclusters", 10, RGB(Gray(0.7)), :left, :bottom))
+plot_baseline!(bs_center,
+               text("Center", 10, RGB(Gray(0.7)), :left, :bottom))
+plot_baseline!(bs_avgrho,
+               text("Mean rad.", 10, RGB(Gray(0.7)), :left, :top))
+
+plot!(baseline_x, ones(2)*quantile(cos_rand, 0.025), fillrange=quantile(cos_rand, 0.975),
+      fillalpha=0.1, fillcolor=GrayA(0., 0.1), primary=false, linealpha=0)
+annotate!(baseline_x[end]*1.05, mean(cos_rand),
+          text("Random\nresponse\n(95% CI)", 10, RGB(Gray(0.7)), :left, :top))
+
+```
+
+```{julia}
+
+# there's a lot of variability by subjects (and small $n$ so very low power)
+
+summaries_by_subj = by(recalled_all, [:α, :ρ, :Sσ, :subjid1]) do d
+    DataFrame(cos=cosinesim(d), mse=Experiments.mse(d,d))
+end
+
+summaries_by_subj_cis = by(summaries_by_subj,
+                           [:α, :ρ, :Sσ],
+                           :cos => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
+
+@_ summaries_by_subj_cis |>
+    @where(_, :Sσ .≈ 0.01) |>
+    @df plot!(:α, :mean, ribbon = (:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10,
+              fillalpha=0.1, color=(1:3)', label=["" "" ""], ylims=(0, 0.18))
+
+@_ summaries_by_subj_cis |>
+    @where(_, :Sσ .≈ 0.01) |>
+    @df plot!(:α, :low, group=:ρ, xscale=:log10,
+              linestyle=:dash, color=(1:3)', label=["" "" ""], ylims=(0, 0.18))
+
+@_ summaries_by_subj_cis |>
+    @where(_, :Sσ .≈ 0.01) |>
+    @df plot!(:α, :high, group=:ρ, xscale=:log10,
+              linestyle=:dash, color=(1:3)', label=["" "" ""], ylims=(0, 0.18))
+
+
+```
+
+## Prediction
+
+### Examples
+
+
+
+### Quantified
+
