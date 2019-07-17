@@ -213,7 +213,7 @@ plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
 
 ### Adjusted Rand Index
 
-```julia
+```{julia; label="adjusted-rand-index"}
 
 @load "../results/randindex-2019-07-15T16:17:46.864.jld2" results_df
 
@@ -222,7 +222,11 @@ ari_summaries = by(results_df, [:α, :ρ], :ari => x -> NamedTuple{(:mean, :low,
 ari_bysub = by(results_df, [:α, :ρ, :subjid1], ari = :ari => mean)
 ari_summaries_bysub = by(ari_bysub, [:α, :ρ], :ari => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
 
-@df ari_summaries_bysub plot(:α, :mean, ribbon=(:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10)
+@df ari_summaries_bysub plot(:α, :mean, ribbon=(:mean .- :low, :high .- :mean),
+                             group=:ρ, xscale=:log10, ylim=(0.75, 1.0),
+                             xlabel="Eagerness to create new clusters (concentration \\alpha)",
+                             ylabel=("Adjusted Rand Index with true clusters"),
+                             legend=:bottomright, legend_title="Stickiness \\rho")
 
 ```
 
