@@ -344,7 +344,7 @@ annotate!(baseline_x[end]*1.05, mean(cos_rand),
 
 ```
 
-```{julia}
+```{julia; label="cosinesim-by-param-subj-cis"}
 
 # there's a lot of variability by subjects (and small $n$ so very low power)
 
@@ -356,10 +356,10 @@ summaries_by_subj_cis = by(summaries_by_subj,
                            [:α, :ρ, :Sσ],
                            :cos => x -> NamedTuple{(:mean, :low, :high)}(boot_ci(x)...))
 
-@_ summaries_by_subj_cis |>
-    @where(_, :Sσ .≈ 0.01) |>
-    @df plot!(:α, :mean, ribbon = (:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10,
-              fillalpha=0.1, color=(1:3)', label=["" "" ""], ylims=(0, 0.18))
+# @_ summaries_by_subj_cis |>
+#     @where(_, :Sσ .≈ 0.01) |>
+#     @df plot!(:α, :mean, ribbon = (:mean .- :low, :high .- :mean), group=:ρ, xscale=:log10,
+#               fillalpha=0.1, color=(1:3)', label=["" "" ""], ylims=(0, 0.18))
 
 @_ summaries_by_subj_cis |>
     @where(_, :Sσ .≈ 0.01) |>
