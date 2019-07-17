@@ -189,7 +189,7 @@ end
 
 euc_dist = @_ recall1 |>
     @with(_, hcat(:x, :y)) |>
-    Distances.pairwise(Euclidean(), _')
+    Distances.pairwise(Euclidean(), _', dims=2)
 
 # plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
 #           title="Inferred clusters (FC)", guide="Trial"),
