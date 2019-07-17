@@ -58,16 +58,31 @@ rho(args...) = sqrt(sum(args.^2))
 boot_ci(x, f=mean, n=1000, cil=0.95) = confint(bootstrap(f, x, BasicSampling(n)),
                                                BasicConfInt(cil))
 
+nblock = length(unique(recall1[:block]))
+
+block_pallete = LCHab.(60, 60, range(0, 320, length=nblock))
+
 ```
 
 
 # Task
 
-```julia
+```{julia; label="task-flow-1"}
+x, y = -0.3, 0.4
+arena([x], [y], color="black")
+```
 
-nblock = length(unique(recall1[:block]))
+```{julia; label="task-flow-2"}
+plot(Gray.(rand(Bool, 100,100)), axis=false, lims=(0,100), aspect_ratio=:equal)
+```
 
-block_pallete = LCHab.(60, 60, range(0, 320, length=nblock))
+```{julia; label="task-flow-3"}
+arena([x], [y], color=:white, markerstrokecolor=:black, markersize=5)
+annotate!(0,0, text("?", 32))
+```
+
+
+```{julia; label="studied-locations"}
 
 p1 = plot(range(0, 2π, length=100), [2π], proj=:polar, color=:black,
           axis=false, grid=false, legend=false,
@@ -93,6 +108,41 @@ plot(p1, p2, size=(850, 400))
 ```
 
 # Behavioral data
+
+```{julia; label="behavioral-data"}
+@df recall1 arena(:x, :y, quiver=(:x_resp .- :x, :y_resp .- :y),
+                    seriestype=:quiver, color=GrayA(0.0, 1.0), label="Behavior")
+```
+
+```{julia; label="known-clusters"}
+
+known_recalled = by(recall, :subjid1) do d
+    @_ KnownFilter(prior_optimized) |>
+    RecallFilter(_, Matrix(0.01I,2,2)) |>
+    filter!(_, extract_data(d, _)) |>
+    DataFrame |>
+    hcat(d, _) |>
+    deletecols!(_, :subjid1) |>
+    @transform(_, cosinesim = 1 .- Distances.colwise(CosineDist(), 
+                                                   hcat(:x_mod.-:x, :y_mod.-:y)', 
+                                                   hcat(:x_resp.-:x, :y_resp.-:y)'))
+end
+
+known_recalled1 = @where(known_recalled, :subjid1 .== one_subj)
+
+arena()
+@_ known_recalled1 |>
+    by(_, :block, :x=>mean, :y=>mean) |>
+    @df(_, scatter!(:x_mean, :y_mean, color=block_pallete,
+                    markersize=8, markeralpha=0.4))
+@df recall1 quiver!(:x, :y, quiver=(:x_resp .- :x, :y_resp .- :y),
+                    seriestype=:quiver, color=GrayA(0.0, 0.5), label="Behavior")
+@df known_recalled1 plot!(:x, :y, quiver=(:x_mod .- :x, :y_mod .- :y),
+                          seriestype=:quiver, group=:block, color=(1:25)',
+                          palette = RGBA.(block_pallete, 0.7),
+                          label="Cluster bias", markeralpha=0.5)
+
+```
 
 # Results
 
