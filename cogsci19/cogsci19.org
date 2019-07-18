@@ -176,14 +176,19 @@
 *** clustering model
     "sticky" CRP/Hibachi Grill Process: prior on cluster index is CPR with some
     constant probability held out for staying in previous cluster.
-**** TODO evaluation
+**** DONE evaluation
      How successful is the model at recovering clusters?  How does it depend on
      the parameters?
 *** particle filter algorithm
-    Each particle is a hypothesis about the cluster assignments of all
-    observations so far.  Updated in parallel and re-sampled to keep a good mix
-    of hypotheses.  Conjugate prior on the cluster mean/covariance, updated
-    based on sufficient statistics
+**** 
+     Each particle is a hypothesis about the cluster assignments of all
+     observations so far.  Updated in parallel and re-sampled to keep a good mix
+     of hypotheses.  Conjugate prior on the cluster mean/covariance, updated
+     based on sufficient statistics
+**** Poster text
+     Problem: too many possible clusterings to count
+     Most clusterings have very low probability
+     
 *** recall model
     Bayesian "cue combination" model: noisy memory trace with context prior.
     Context prior is a normal with expected mean/covariance.
@@ -201,11 +206,11 @@
 **** TODO qualitative
      Want to show at least one example of inferred clusters.  Maybe a few,
      varying the parameters...
-**** TODO quantitative (measure of cluster agreement/disagreement)
+**** DONE quantitative (measure of cluster agreement/disagreement)
      Adjusted Rand Index??  This would take a BIT of doing but not too
      much...just have to extend the Clustering.jl methods for ... count I think?
 *** recall
-**** TODO better chance level baseline
+**** DONE better chance level baseline
      Can use a permutation test to do this: shuffle the deviations across
      trials.  Can do that for all the measures actually...
 **** consistency of approximation

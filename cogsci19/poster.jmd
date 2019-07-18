@@ -150,7 +150,7 @@ arena()
 
 ### Example
 
-```julia
+```{julia; }
 Random.seed!(2019)
 
 rf_cl = RecallFilter(ChenLiuParticles(100,
@@ -191,6 +191,10 @@ euc_dist = @_ recall1 |>
     @with(_, hcat(:x, :y)) |>
     Distances.pairwise(Euclidean(), _', dims=2)
 
+
+
+save("figures/inferred-blocks.png", outline_blocks(filter_sim, recall1[:block], block_pallete))
+
 # plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
 #           title="Inferred clusters (FC)", guide="Trial"),
 #      plot(outline_blocks(filter_sim_cl, recall1[:block], block_pallete),
@@ -200,6 +204,7 @@ euc_dist = @_ recall1 |>
 #                          block_pallete),
 #           title="Euclidean distance"),
 #      aspect_ratio=:equal, layout=(1,3), size=(900,300))
+
 plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
           title="Inferred clusters", guide="Trial"),
      plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),
@@ -209,6 +214,12 @@ plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
      aspect_ratio=:equal, layout=(1,2), size=(600,300))
 
 
+```
+
+```{julia; label="inferred-clusters"}
+plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
+     title="Inferred clusters", guide="Trial",
+     aspect_ratio=:equal, size=(300,300), grid = false, ticks=true)
 ```
 
 ### Adjusted Rand Index

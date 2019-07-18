@@ -1,3 +1,4 @@
+
 using Distributions,
     Plots,
     StatsPlots
@@ -47,6 +48,8 @@ end
 p
 
 
+# https://pdfs.semanticscholar.org/0e39/32b776eb3803e0f0ae2e414f69399daa411d.pdf
+# https://biostatmatt.com/archives/2754
 
 using FastGaussQuadrature, ApproxFun
 

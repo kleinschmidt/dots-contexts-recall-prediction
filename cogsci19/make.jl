@@ -4,7 +4,12 @@ using
     Revise,
     Weave
 
+
 function make_paper()
+    Weave.set_chunk_defaults(Dict{Symbol,Any}(
+        :results => "hidden",
+        :echo => false
+    ))
     weave("cogsci.jmd",
           doctype="pandoc",
           fig_ext=".pdf",
