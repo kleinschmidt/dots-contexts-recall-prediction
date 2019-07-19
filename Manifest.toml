@@ -14,9 +14,9 @@ version = "0.11.1"
 
 [[ApproxFunBase]]
 deps = ["AbstractFFTs", "BandedMatrices", "BlockArrays", "BlockBandedMatrices", "Calculus", "DSP", "DomainSets", "DualNumbers", "FFTW", "FastGaussQuadrature", "FastTransforms", "FillArrays", "InfiniteArrays", "IntervalSets", "LazyArrays", "LinearAlgebra", "LowRankApprox", "Random", "SparseArrays", "SpecialFunctions", "StaticArrays", "Statistics", "Test", "ToeplitzMatrices"]
-git-tree-sha1 = "af97b42b934465441af1dc42647140d6ba051286"
+git-tree-sha1 = "3f4b1ae829184578941a30ec3b8c10563979f530"
 uuid = "fbd15aa5-315a-5a7d-a8a4-24992e37be05"
-version = "0.1.2"
+version = "0.1.3"
 
 [[ApproxFunFourier]]
 deps = ["AbstractFFTs", "ApproxFunBase", "BandedMatrices", "BlockArrays", "BlockBandedMatrices", "Calculus", "DSP", "DomainSets", "DualNumbers", "FFTW", "FastGaussQuadrature", "FastTransforms", "FillArrays", "InfiniteArrays", "IntervalSets", "LazyArrays", "LinearAlgebra", "LowRankApprox", "Reexport", "SpecialFunctions", "StaticArrays", "Test", "ToeplitzMatrices"]
@@ -95,9 +95,9 @@ version = "2.1.0"
 
 [[CSTParser]]
 deps = ["Tokenize"]
-git-tree-sha1 = "376a39f1862000442011390f1edf5e7f4dcc7142"
+git-tree-sha1 = "0ff80f68f55fcde2ed98d7b24d7abaf20727f3f8"
 uuid = "00ebfdb7-1f24-5e51-bd34-a7502290713f"
-version = "0.6.0"
+version = "0.6.1"
 
 [[Calculus]]
 deps = ["Compat"]
@@ -238,9 +238,9 @@ version = "1.0.0"
 
 [[DataValues]]
 deps = ["DataValueInterfaces", "Dates"]
-git-tree-sha1 = "d552af7ffaaa2f38711fdc69dda50c74b11b7370"
+git-tree-sha1 = "b65fd071ca17aa265eb8c5ab0e522faa03a50d34"
 uuid = "e7dc6d0d-1eca-5fa6-8ad6-5aecde8b7ea5"
-version = "0.4.11"
+version = "0.4.12"
 
 [[Dates]]
 deps = ["Printf"]
@@ -292,9 +292,9 @@ version = "0.8.0"
 
 [[DomainSets]]
 deps = ["IntervalSets", "LinearAlgebra", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "8172e0bf793c497fd23990281a800379000182bc"
+git-tree-sha1 = "591ad14ca2c777b07463b6bde3afb2bfe852e1be"
 uuid = "5b8099bc-c8ec-5219-889f-1d9e522a28bf"
-version = "0.0.2"
+version = "0.1.0"
 
 [[DualNumbers]]
 deps = ["Calculus", "LinearAlgebra", "NaNMath", "SpecialFunctions", "Test"]
@@ -664,7 +664,9 @@ version = "0.3.6"
 
 [[Particles]]
 deps = ["ConjugatePriors", "Distances", "Distributions", "LinearAlgebra", "ProgressMeter", "Random", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns"]
-path = "/home/dave/.julia/dev/Particles"
+git-tree-sha1 = "1d2f535c0348888d419e528ef45ee687a15ad0c9"
+repo-rev = "master"
+repo-url = "https://github.com/kleinschmidt/Particles.jl.git"
 uuid = "2ebe8b25-25be-5fc1-b6bc-48c775df5563"
 version = "0.1.2"
 
