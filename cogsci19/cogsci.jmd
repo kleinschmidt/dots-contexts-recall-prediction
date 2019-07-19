@@ -54,7 +54,7 @@ using
 using 
     Plots,
     PlotThemes,
-    StatPlots,
+    StatsPlots,
     RecipesBase,
     Colors, 
     Images,
@@ -65,7 +65,6 @@ using
     ConjugatePriors,
     Particles,
     Distances, 
-    JuliennedArrays,
     Bootstrap
 
 theme(:default, markerstrokecolor=:white)
@@ -74,11 +73,11 @@ flip(x::AbstractVector) = reshape(x, (1,:))
 
 const It = Base.Iterators
 
-Revise.track("../modeling.jl")
+includet("../modeling.jl")
 using .DotLearning
-Revise.track("../experiments.jl")
+includet("../experiments.jl")
 using .Experiments
-include("../plots.jl")
+includet("../plots.jl")
 
 using JLD2
 @load "../data/dots2014.jld2" recall pred
@@ -240,7 +239,7 @@ $$p(z_i=j | x_{1:i}, z_{1:i-1}) \propto p(x_i | z_i=j, z_{1:i-1}, x_{1:i-1})
 p(z_i=j | z_{1:i-1}) $$
 
 The sequential prior $p(z_i=j | z_{1:i-1})$ is a "Hibachi Grill Process"
-[@Qian2014; @Fox2011], which is like the standard Chinese Restaurant Process (CRP) with an
+[@Qian2014; @Fox2011b], which is like the standard Chinese Restaurant Process (CRP) with an
 added (constant) probability assigned to the previous state.  This corresponds
 to the following generative model: with probability $0 < \rho < 1$ the previous
 state is picked, $j=z_{i-1}$, and with probability $1-\rho$ a component is
@@ -370,11 +369,20 @@ is available from [osf.io/dqz73/](https://osf.io/dqz73/)
 
 Random.seed!(2019)
 
-rf = RecallFilter(ChenLiuParticles(100,
-                                     prior_optimized,
-                                     StickyCRP(0.01, 0.9)),
-                  Matrix(0.01I,2,2))
-filter!(rf, extract_data(recall1, rf))
+rf_cl = RecallFilter(ChenLiuParticles(100,
+                                      prior_optimized,
+                                      StickyCRP(0.01, 0.9)),
+                     Matrix(0.01I,2,2))
+rf_fh = RecallFilter(FearnheadParticles(100,
+                                        prior_optimized,
+                                        StickyCRP(0.01, 0.9)),
+                     Matrix(0.01I,2,2))
+
+filter!(rf_cl, extract_data(recall1, rf_cl))
+filter!(rf_fh, extract_data(recall1, rf_fh))
+
+rf = rf_fh
+
 ```
 
 ## Clustering
@@ -382,6 +390,8 @@ filter!(rf, extract_data(recall1, rf))
 ```{julia; label="assign-mats"; fig_cap="Cluster assignment similarity matrix for clusters inferred by one population of particles from subject 4's studied locations (left), with the true (experimenter-defined) blocks outlined in colors (see Figure -@fig:stimuli).  The similarity matrix based on the Euclidean distance between each location is shown for comparison (right) and to show that the model groups some similar locations into the same cluster even though they are from different blocks."}
 
 filter_sim = assignment_similarity(rf)
+filter_sim_cl = assignment_similarity(rf_cl)
+
 
 # outline the boundaries of the blocks in ~colors~
 function outline_blocks(sim_mat, blocks, block_pallete)
@@ -404,6 +414,15 @@ euc_dist = @_ recall1 |>
     @with(_, hcat(:x, :y)) |>
     Distances.pairwise(Euclidean(), _')
 
+# plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
+#           title="Inferred clusters (FC)", guide="Trial"),
+#      plot(outline_blocks(filter_sim_cl, recall1[:block], block_pallete),
+#           title="Inferred clusters (CL)", guide="Trial"),
+#      plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),
+#                          recall1[:block],
+#                          block_pallete),
+#           title="Euclidean distance"),
+#      aspect_ratio=:equal, layout=(1,3), size=(900,300))
 plot(plot(outline_blocks(filter_sim, recall1[:block], block_pallete),
           title="Inferred clusters", guide="Trial"),
      plot(outline_blocks(1 .- euc_dist ./ maximum(euc_dist),

@@ -42,7 +42,8 @@ module Experiments
 using
     Random,
     Distances,
-    Statistics
+    Statistics,
+    DataFrames
 
 export
     Experiment,
@@ -139,6 +140,13 @@ experiments(data, params::Dict) = [Experiment(d, data) for d in arrayofdicts(par
 experiments(data; kw...) = experiments(data, Dict(kw))
 
 
+
+function add_params!(df::AbstractDataFrame, params)
+    for (k,v) in params
+        df[k] = v
+    end
+    df
+end
 
 
 ################################################################################

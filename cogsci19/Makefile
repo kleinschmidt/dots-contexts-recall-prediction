@@ -4,3 +4,5 @@ cogsci.pdf: cogsci.tex
 cogsci.tex: cogsci.md latexpaper/cogsci_template.tex
 	pandoc -o $@ --biblatex --bibliography=/home/dave/Documents/papers/zotero.bib --template=latexpaper/cogsci_template.tex --filter pandoc-crossref $<
 
+poster.html: poster.md
+	pandoc -o $@ --filter pandoc-citeproc $<
