@@ -687,9 +687,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="2653.5771"
-     inkscape:cy="672.43088"
+     inkscape:zoom="0.25"
+     inkscape:cx="3438.5497"
+     inkscape:cy="2151.7023"
      inkscape:document-units="in"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -933,33 +933,28 @@
     </g>
     <text
        id="text9272"
-       y="-740.86749"
-       x="19.767426"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:58.22933578px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.45573318"
+       y="-766.38153"
+       x="22.93899"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:37.11772537px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.92794293"
        xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:58.22933578px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:1.45573318"
-         y="-740.86749"
-         x="19.767426"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:37.11772537px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.92794293"
+         y="-766.38153"
+         x="22.93899"
          id="tspan9270"
          sodipodi:role="line">A Bayesian model of memory in a multi-context environment</tspan></text>
     <text
        id="text9276"
-       y="-760.19916"
-       x="1969.6357"
-       style="font-style:normal;font-weight:normal;font-size:25.70837975px;line-height:1;font-family:sans-serif;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.64270949"
+       y="-733.1698"
+       x="373.8074"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.44417191px;line-height:1;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:end;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:end;fill:#7d7d7d;fill-opacity:1;stroke:none;stroke-width:0.48610526;"
        xml:space="preserve"><tspan
-         style="line-height:1;text-align:end;text-anchor:end;stroke-width:0.64270949"
-         y="-760.19916"
-         x="1976.7657"
-         id="tspan9274"
-         sodipodi:role="line">Dave F. Kleinschmidt </tspan><tspan
-         id="tspan14587"
-         style="line-height:1;text-align:end;text-anchor:end;stroke-width:0.64270949"
-         y="-734.49078"
-         x="1969.6357"
-         sodipodi:role="line">Pernille Hemmer</tspan></text>
+         sodipodi:role="line"
+         id="tspan6138"
+         x="373.80737"
+         y="-733.1698"
+         style="stroke-width:0.48610526;fill:#7d7d7d;fill-opacity:1;">Dave F. Kleinschmidt &amp; Pernille Hemmer</tspan></text>
     <g
-       transform="matrix(0.06020085,0,0,-0.06020085,1993.6163,-712.40533)"
+       transform="matrix(0.03687781,0,0,-0.03687781,1113.4439,-745.33293)"
        id="g12">
       <path
          inkscape:connector-curvature="0"
@@ -7192,7 +7187,7 @@
          id="polyline20796" />
     </g>
     <g
-       transform="matrix(0.05927759,0,0,0.05927759,-57.521967,16.246147)"
+       transform="matrix(0.05927759,0,0,0.05927759,-55.276903,12.504374)"
        id="g29547">
       <g
          id="g28653">
@@ -10421,7 +10416,7 @@
           <polygon
              style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd"
              clip-path="url(#clip6500)"
-             points="1812.79,121.675 1812.79,1488.11 3352.76,1488.11 3352.76,121.675 "
+             points="1812.79,1488.11 3352.76,1488.11 3352.76,121.675 1812.79,121.675 "
              id="polygon10108"
              transform="matrix(3.4158096,0,0,3.4158096,6281.1288,-9768.9831)" />
           <g
@@ -14257,24 +14252,24 @@
     </g>
     <text
        id="text24480"
-       y="-599.79346"
+       y="-602.00439"
        x="30.324736"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          id="tspan24482"
          style="font-weight:bold;font-size:25.40000153px;stroke-width:0.26458332"
-         y="-599.79346"
+         y="-602.00439"
          x="30.324736"
          sodipodi:role="line">Task</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="403.82617"
-       y="-602.29431"
+       y="-602.00439"
        id="text25383"><tspan
          sodipodi:role="line"
          x="403.82617"
-         y="-602.29431"
+         y="-602.00439"
          style="font-weight:bold;font-size:25.40000153px;stroke-width:0.26458332"
          id="tspan25381">Behavior</tspan></text>
     <g
@@ -23861,17 +23856,17 @@
     </g>
     <text
        id="text30844"
-       y="-1.662486"
-       x="26.217152"
+       y="-48.229153"
+       x="25.158819"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          id="tspan30842"
          style="font-weight:bold;font-size:25.40000153px;stroke-width:0.26458332"
-         y="-1.662486"
-         x="26.217152"
+         y="-48.229153"
+         x="25.158819"
          sodipodi:role="line">Model</tspan></text>
     <flowRoot
-       transform="matrix(0.26458333,0,0,0.26458333,-545.06369,-331.83311)"
+       transform="matrix(0.26458333,0,0,0.26458333,-546.12202,-378.39978)"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot30846"
        xml:space="preserve"><flowRegion
@@ -24434,7 +24429,7 @@
        xml:space="preserve"
        id="flowRoot9597"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-       transform="matrix(0.26458333,0,0,0.26458333,-20.697134,-809.38907)"><flowRegion
+       transform="matrix(0.26458333,0,0,0.26458333,-18.45207,-813.13084)"><flowRegion
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start"
          id="flowRegion9581"><rect
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start"
@@ -24448,23 +24443,25 @@
    id="flowSpan9587">latent clusters</flowSpan></flowPara><flowPara
          id="flowPara9595" /></flowRoot>    <text
        id="text9620"
-       y="-601.02563"
+       y="-602.00439"
        x="97.799698"
        style="font-style:normal;font-weight:normal;font-size:10.58333397px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#828282;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          style="fill:#828282;fill-opacity:1;stroke-width:0.26458332"
-         y="-601.02563"
+         y="-602.00439"
          x="97.799698"
          id="tspan9618"
          sodipodi:role="line">Robbins, Hemmer, and Tang (2014 CogSci)</tspan></text>
     <text
        id="text10446"
-       y="-312.68631"
-       x="26.388147"
-       style="font-style:normal;font-weight:normal;font-size:10.58333333px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.30466476;-inkscape-font-specification:'sans-serif, Normal';font-stretch:normal;font-variant:normal;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;"
+       y="-316.42807"
+       x="28.633211"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.30466476"
        xml:space="preserve"><tspan
          sodipodi:role="line"
-         id="tspan6136">3, 6, 9, or 12 trials per cluster, multiple clusters very close to the center</tspan></text>
+         id="tspan6136"
+         x="28.633211"
+         y="-316.42807">3, 6, 9, or 12 trials per cluster, multiple clusters very close to the center</tspan></text>
     <flowRoot
        transform="matrix(0.26458333,0,0,0.26458333,366.1613,-1413.0406)"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -24481,16 +24478,16 @@
    style="font-style:italic">p</flowSpan> &lt; 0.001 using uniform response null)</flowPara></flowRoot>    <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="295.88107"
-       y="-1.662486"
+       x="294.82275"
+       y="-48.229153"
        id="text7882"><tspan
          sodipodi:role="line"
-         x="295.88107"
-         y="-1.662486"
+         x="294.82275"
+         y="-48.229153"
          style="font-weight:bold;font-size:16.93333244px;stroke-width:0.26458332"
          id="tspan7880">Particle filter approximation</tspan></text>
     <flowRoot
-       transform="matrix(0.26458333,0,0,0.26458333,-131.46588,-313.00222)"
+       transform="matrix(0.26458333,0,0,0.26458333,-132.52421,-359.56889)"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.10000002;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot7884"
        xml:space="preserve"><flowRegion
@@ -24512,31 +24509,31 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="404.18604"
-       y="-316.02792"
+       y="-315.08426"
        id="text7944"><tspan
          sodipodi:role="line"
          x="404.18604"
-         y="-316.02792"
+         y="-315.08426"
          style="font-weight:bold;font-size:25.40000153px;stroke-width:0.26458332"
          id="tspan7942">Results<tspan
    id="tspan7946"
    style="font-weight:normal;stroke-width:0.26458332">: clusters</tspan></tspan></text>
     <text
        id="text7950"
-       y="-1.662486"
-       x="598.24292"
+       y="-48.229153"
+       x="597.18457"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          id="tspan7948"
          style="font-weight:bold;font-size:16.93333244px;stroke-width:0.26458332"
-         y="-1.662486"
-         x="598.24292"
+         y="-48.229153"
+         x="597.18457"
          sodipodi:role="line">Parameters</tspan></text>
     <flowRoot
        xml:space="preserve"
        id="flowRoot7968"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.10000002;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-       transform="matrix(0.26458333,0,0,0.26458333,170.49803,-313.00222)"><flowRegion
+       transform="matrix(0.26458333,0,0,0.26458333,169.4397,-359.56889)"><flowRegion
          id="flowRegion7954"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start"><rect
            id="rect7952"
@@ -25162,13 +25159,13 @@
     </g>
     <text
        id="text6146"
-       y="-602.29431"
+       y="-602.00439"
        x="801.45593"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          id="tspan6144"
          style="font-weight:bold;font-size:25.40000153px;stroke-width:0.26458332"
-         y="-602.29431"
+         y="-602.00439"
          x="801.45593"
          sodipodi:role="line">Results<tspan
    style="font-weight:normal;stroke-width:0.26458332"
@@ -25192,33 +25189,35 @@
    style="font-weight:bold"
    id="flowSpan6104">high stickiness</flowSpan> ρ</flowPara></flowRoot>    <text
        id="text6191"
-       y="-314.53442"
+       y="-315.08426"
        x="888.86163"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        xml:space="preserve"><tspan
          id="tspan6189"
          style="font-weight:bold;font-size:25.40000153px;stroke-width:0.26458332"
-         y="-314.53442"
+         y="-315.08426"
          x="888.86163"
          sodipodi:role="line">Results<tspan
    style="font-weight:normal;stroke-width:0.26458332"
    id="tspan6187">: prediction</tspan></tspan></text>
     <flowRoot
        transform="matrix(0.26458333,0,0,0.26458333,-300.05593,-544.29684)"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-weight:normal;font-size:40.0000005px;line-height:1;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;-inkscape-font-specification:'sans-serif, Normal';font-stretch:normal;font-variant:normal;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;"
        id="flowRoot6193"
        xml:space="preserve"><flowRegion
-         id="flowRegion6195"><rect
+         id="flowRegion6195"
+         style="-inkscape-font-specification:'sans-serif, Normal';font-family:sans-serif;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:40.0000005px;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;"><rect
            y="933.87317"
            x="4500.0273"
            height="557.20007"
            width="602.45477"
-           id="rect6197" /></flowRegion><flowPara
-         id="flowPara6199">Subjects also occasionally predicted the location that dots would appear in 1, 5, or 10 trials</flowPara><flowPara
-         id="flowPara6201" /><flowPara
-         id="flowPara6203">For longer predictions: tend to predict farther from last studied location, and return to center cluster</flowPara><flowPara
-         id="flowPara6205" /><flowPara
-         id="flowPara6215">Model qualitatively captures tendency to predict a return to center at longer delays</flowPara></flowRoot>    <g
+           id="rect6197"
+           style="-inkscape-font-specification:'sans-serif, Normal';font-family:sans-serif;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;font-size:40.0000005px;text-anchor:start;text-align:start;writing-mode:lr;font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;" /></flowRegion><flowPara
+         id="flowPara10660">Subjects also occasionally predicted where dots would appear in 1, 5, or 10 trials</flowPara><flowPara
+         id="flowPara10662"></flowPara><flowPara
+         id="flowPara10664">For longer predictions: tend to predict farther from last studied location, and return to center cluster</flowPara><flowPara
+         id="flowPara10666"></flowPara><flowPara
+         id="flowPara10668">Model qualitatively captures tendency to predict a return to center at longer delays</flowPara></flowRoot>    <g
        transform="matrix(0.08901222,0,0,0.08901222,1049.4103,-295.63389)"
        id="g9988">
       <polygon
@@ -25568,7 +25567,7 @@
        xml:space="preserve"
        id="flowRoot10012"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       transform="matrix(0.26458333,0,0,0.26458333,-300.36599,-338.71204)"><flowRegion
+       transform="matrix(0.26458333,0,0,0.26458333,-300.36599,-330.77452)"><flowRegion
          id="flowRegion9992"><rect
            id="rect9990"
            width="540.22913"
@@ -35486,7 +35485,7 @@
     <g
        style="stroke:none"
        id="g40769"
-       transform="matrix(0.26458333,0,0,0.26458333,1970.167,-211.98198)">
+       transform="matrix(0.19359316,0,0,0.19359316,1106.6449,-487.63916)">
       <path
          id="path40757-7"
          d="m 1034.1997,-1584.95 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 60.2381,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m -240.9524,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 72.2857,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 72.2857,0 h 12.0476 v 12.0476 h -12.0476 z m -240.9524,12.0476 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0477 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0477 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0477 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0477 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0477 h -12.0476 z m 48.1905,0 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0477 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0477 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0477 h -12.0476 z m -240.9524,12.0477 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m -240.9524,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 48.1905,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m -240.9524,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 72.2857,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 72.2857,0 h 12.0476 v 12.0476 h -12.0476 z m -240.9524,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m -144.5715,12.0476 h 12.0477 v 12.0477 h -12.0477 z m -96.3809,12.0477 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 60.2381,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m -180.7144,12.0476 h 12.0477 v 12.0476 h -12.0477 z m 48.1905,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m -228.9048,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 48.1905,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1428,0 h 12.0477 v 12.0476 h -12.0477 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m -228.9048,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 48.1905,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m -240.9524,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 36.1428,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m -144.5715,12.0476 h 12.0477 v 12.0477 h -12.0477 z m 60.2381,0 h 12.0477 v 12.0477 h -12.0477 z m 24.0953,0 h 12.0476 v 12.0477 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0477 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0477 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0477 h -12.0476 z m -240.9524,12.0477 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 48.1905,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 48.1905,0 h 12.0476 v 12.0476 h -12.0476 z m -228.9048,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 72.2857,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 60.2381,0 h 12.0477 v 12.0476 h -12.0477 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0953,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m -228.9048,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m -240.9524,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 48.1905,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m -204.8095,12.0476 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0477 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0477 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0476 v 12.0477 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0477 h -12.0477 z m 36.1429,0 h 12.0476 v 12.0477 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0477 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0477 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0477 h -12.0476 z m -168.6667,12.0477 h 12.0476 v 12.0476 h -12.0476 z m 72.2857,0 h 12.0476 v 12.0476 h -12.0476 z m 60.2381,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 48.1905,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m -216.8572,12.0476 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 24.0952,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1428,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0477 v 12.0476 h -12.0477 z m 12.0477,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 12.0476,0 h 12.0476 v 12.0476 h -12.0476 z m 36.1429,0 h 12.0476 v 12.0476 h -12.0476 z"
@@ -35497,16 +35496,16 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:18.68336105px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.46708402"
        x="25.439396"
-       y="-682.47235"
+       y="-685.6474"
        id="text40788"><tspan
          sodipodi:role="line"
          id="tspan40786"
          x="25.439396"
-         y="-682.47235"
+         y="-685.6474"
          style="stroke-width:0.46708402">Stimuli occur in context, which provides a lot of information about how to interpret uncertain sensory data, memory traces, etc.</tspan><tspan
          sodipodi:role="line"
          x="25.439396"
-         y="-659.11816"
+         y="-662.29321"
          style="stroke-width:0.46708402"
          id="tspan40790">But <tspan
    style="font-weight:bold"
@@ -35520,16 +35519,16 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:25.40000153px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="598.99127"
-       y="88.358597"
+       x="597.93292"
+       y="41.791931"
        id="text40804"><tspan
          sodipodi:role="line"
-         x="598.99127"
-         y="88.358597"
+         x="597.93292"
+         y="41.791931"
          style="font-weight:bold;font-size:16.93333244px;stroke-width:0.26458332"
          id="tspan40802">Recall model</tspan></text>
     <flowRoot
-       transform="matrix(0.26458333,0,0,0.26458333,170.49286,-232.17991)"
+       transform="matrix(0.26458333,0,0,0.26458333,169.43453,-278.74658)"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.10000002;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot40816"
        xml:space="preserve"><flowRegion
@@ -35560,33 +35559,33 @@
          style="stroke-width:0.26458332"
          id="tspan6112" /></text>
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 525.99166,-604.875 H 753.53332"
+       style="fill:none;stroke:#cccccc;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 525.99166,-606.84536 H 753.53332"
        id="path6116"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 974.73195,-605.13498 H 1181.2778"
+       style="fill:none;stroke:#cccccc;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 974.73195,-606.84536 H 1181.2778"
        id="path6122"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 608.41236,-319.63769 H 831.42203"
+       style="fill:none;stroke:#cccccc;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 608.41236,-318.88933 H 831.42203"
        id="path6126"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 1117.2935,-318.14097 h 241.7186"
+       style="fill:none;stroke:#cccccc;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 1117.2935,-318.88933 h 241.7186"
        id="path6130"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 109.25978,-6.8254221 H 287.36819"
+       style="fill:none;stroke:#cccccc;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 108.20145,-53.392089 H 286.30986"
        id="path6132"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 309.07048,-603.2641 h 53.88155"
+       style="fill:none;stroke:#cccccc;stroke-width:2.64583333;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 309.07048,-606.84536 h 53.88155"
        id="path6134"
        inkscape:connector-curvature="0" />
   </g>
